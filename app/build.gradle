@@ -4,6 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
+        multiDexEnabled true
         applicationId "group3.psit3.zhaw.ch.travelbuddy"
         minSdkVersion 15
         targetSdkVersion 25
@@ -29,5 +30,6 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.google.android.gms:play-services-maps:10.2.0'
+    compile 'com.google.android.gms:play-services:10.2.0'
     testCompile 'junit:junit:4.12'
 }

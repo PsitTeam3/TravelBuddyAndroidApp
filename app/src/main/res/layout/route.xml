@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:weightSum="1">
+
+    <fragment
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:id="@+id/fragment"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="0dp"
+            android:layout_weight="1"
+            tools:layout="@layout/activity_maps"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Time spent: 24m 12s"
+            android:id="@+id/textView"
+            android:layout_weight="0.26"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"/>
+
+    <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:id="@+id/progressBar"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="42"/>
+
+</LinearLayout>

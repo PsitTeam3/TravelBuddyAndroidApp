@@ -1,8 +1,15 @@
 package group3.psit3.zhaw.ch.travelbuddy;
 
-import android.support.v4.app.FragmentActivity;
+import android.location.Location;
 import android.os.Bundle;
-
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -10,20 +17,40 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
     private GoogleMap mMap;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.route);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.fragment);
         mapFragment.getMapAsync(this);
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
     }
 
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
 
     /**
      * Manipulates the map once available.
@@ -36,11 +63,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.mMap = googleMap;
+        updateMarker();
+    }
 
-        // Add a marker in Sydney and move the camera
-        LatLng zurich = new LatLng(47, 8);
-        mMap.addMarker(new MarkerOptions().position(zurich).title("Zurich Marker"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(zurich));
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        try {
+            this.mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+        } catch (SecurityException ex) {
+            // falls through
+        }
+        updateMarker();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        //TODO(Handle connection suspension)
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        //TODO(Handle connection failure
+    }
+
+    private void updateMarker() {
+        if (this.mMap != null && this.mLastLocation != null) {
+            LatLng position = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(position).title("Zurich Marker"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+        }
     }
 }
