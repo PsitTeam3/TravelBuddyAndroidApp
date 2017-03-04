@@ -18,15 +18,17 @@ notifications:
     on_failure: never
     on_success: never
 
-install:
-  - ./gradlew core:assemble
 script:
-  - ./gradlew core:build
+    - ./gradlew build test
 
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
 
 after_success:
   - if [ -e ./gradlew ]; then ./gradlew jacocoTestReport;else gradle jacocoTestReport;fi
