@@ -17,3 +17,7 @@ to issue following commands:`
 
 * `./gradlew build` builds the apks to `app/build/output/apk/app-debug.apk` and `app/build/output/apk/app-release-unsigned.apk`.
 * `./gradlew test` runs all unit tests
+
+## Troubleshoot
+
+If you encounter any problems regarding Intel HAXM virtualization issues: stop docker machine
