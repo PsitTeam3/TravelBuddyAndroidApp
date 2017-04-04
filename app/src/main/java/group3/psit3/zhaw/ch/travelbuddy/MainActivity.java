@@ -2,11 +2,15 @@ package group3.psit3.zhaw.ch.travelbuddy;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Response;
@@ -68,6 +72,8 @@ public class MainActivity extends Activity {
                                 JSONObject obj = response.getJSONObject(i);
                                 Route route = new Route();
                                 route.setName(obj.getString("Name"));
+                                route.setDescription(obj.getString("Description"));
+                                route.setDetailDescription(obj.getString("DetailDescription"));
 //                                route.setThumbnailUrl(obj.getString("Image"));
                                 route.setThumbnailUrl("http://api.androidhive.info/json/movies/1.jpg");
 
@@ -95,6 +101,23 @@ public class MainActivity extends Activity {
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(routeReq);
+
+        final Context context = this;
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Route route = routes.get(position);
+
+                Intent detailIntent = new Intent(context, RouteDetailActivity.class);
+
+                detailIntent.putExtra("name", route.getName());
+                detailIntent.putExtra("detailDescription", route.getDetailDescription());
+
+                startActivity(detailIntent);
+            }
+
+        });
     }
 
     @Override

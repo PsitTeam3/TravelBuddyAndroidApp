@@ -59,6 +59,7 @@ public class CustomListAdapter extends BaseAdapter {
 
         NetworkImageView thumbnail = (NetworkImageView) convertView.findViewById(R.id.thumbnail);
         TextView name = (TextView) convertView.findViewById(R.id.name);
+        TextView description = (TextView) convertView.findViewById(R.id.description);
 
         // getting route data for the row
         Route route = routes.get(position);
@@ -66,6 +67,7 @@ public class CustomListAdapter extends BaseAdapter {
         // attributes
         thumbnail.setImageUrl(route.getThumbnailUrl(), imageLoader);
         name.setText(route.getName());
+        description.setText(route.getDescription());
 
         return convertView;
     }
