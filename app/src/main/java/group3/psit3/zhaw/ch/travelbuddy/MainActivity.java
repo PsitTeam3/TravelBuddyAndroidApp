@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
                                 tour.setName(obj.getString("Name"));
                                 tour.setDescription(obj.getString("Description"));
                                 tour.setDetailDescription(obj.getString("DetailDescription"));
-//                                tour.setThumbnailUrl(obj.getString("Image"));
+                                // tour.setThumbnailUrl(obj.getString("Image"));
                                 tour.setThumbnailUrl("http://api.androidhive.info/json/movies/1.jpg");
 
                                 // adding movie to movies array
