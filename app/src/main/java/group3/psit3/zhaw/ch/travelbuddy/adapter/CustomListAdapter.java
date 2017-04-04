@@ -8,15 +8,20 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+
 import java.util.List;
 
 import group3.psit3.zhaw.ch.travelbuddy.R;
+import group3.psit3.zhaw.ch.travelbuddy.app.AppController;
 import group3.psit3.zhaw.ch.travelbuddy.model.Route;
 
 public class CustomListAdapter extends BaseAdapter {
     private Activity activity;
     private List<Route> routes;
     private LayoutInflater inflater;
+    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public CustomListAdapter(Activity activity, List<Route> routes) {
         this.activity = activity;
@@ -48,12 +53,18 @@ public class CustomListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_row, null);
         }
 
+        if (imageLoader == null) {
+            imageLoader = AppController.getInstance().getImageLoader();
+        }
+
+        NetworkImageView thumbnail = (NetworkImageView) convertView.findViewById(R.id.thumbnail);
         TextView name = (TextView) convertView.findViewById(R.id.name);
 
         // getting route data for the row
         Route route = routes.get(position);
 
-        // name
+        // attributes
+        thumbnail.setImageUrl(route.getThumbnailUrl(), imageLoader);
         name.setText(route.getName());
 
         return convertView;

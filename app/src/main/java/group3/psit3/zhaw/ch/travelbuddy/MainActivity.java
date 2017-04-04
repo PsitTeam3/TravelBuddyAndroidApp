@@ -68,6 +68,8 @@ public class MainActivity extends Activity {
                                 JSONObject obj = response.getJSONObject(i);
                                 Route route = new Route();
                                 route.setName(obj.getString("Name"));
+//                                route.setThumbnailUrl(obj.getString("Image"));
+                                route.setThumbnailUrl("http://api.androidhive.info/json/movies/1.jpg");
 
                                 // adding movie to movies array
                                 routes.add(route);

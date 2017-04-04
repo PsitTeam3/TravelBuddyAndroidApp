@@ -1,7 +1,7 @@
 package group3.psit3.zhaw.ch.travelbuddy.model;
 
 public class Route {
-    private String name;
+    private String name, thumbnailUrl;
 
     public Route() {
     }
@@ -16,5 +16,13 @@ public class Route {
 
     public void setName(String title) {
         this.name = title;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 }
