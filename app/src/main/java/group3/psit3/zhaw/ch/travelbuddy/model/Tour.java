@@ -1,12 +1,12 @@
 package group3.psit3.zhaw.ch.travelbuddy.model;
 
-public class Route {
+public class Tour {
     private String name, description, detailDescription, thumbnailUrl;
 
-    public Route() {
+    public Tour() {
     }
 
-    public Route(String title) {
+    public Tour(String title) {
         this.name = title;
     }
 

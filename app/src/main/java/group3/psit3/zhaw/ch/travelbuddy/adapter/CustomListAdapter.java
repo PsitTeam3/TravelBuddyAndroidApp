@@ -15,27 +15,27 @@ import java.util.List;
 
 import group3.psit3.zhaw.ch.travelbuddy.R;
 import group3.psit3.zhaw.ch.travelbuddy.app.AppController;
-import group3.psit3.zhaw.ch.travelbuddy.model.Route;
+import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 
 public class CustomListAdapter extends BaseAdapter {
     private Activity activity;
-    private List<Route> routes;
+    private List<Tour> tours;
     private LayoutInflater inflater;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-    public CustomListAdapter(Activity activity, List<Route> routes) {
+    public CustomListAdapter(Activity activity, List<Tour> tours) {
         this.activity = activity;
-        this.routes = routes;
+        this.tours = tours;
     }
 
     @Override
     public int getCount() {
-        return this.routes.size();
+        return this.tours.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return this.routes.get(position);
+        return this.tours.get(position);
     }
 
     @Override
@@ -61,13 +61,13 @@ public class CustomListAdapter extends BaseAdapter {
         TextView name = (TextView) convertView.findViewById(R.id.name);
         TextView description = (TextView) convertView.findViewById(R.id.description);
 
-        // getting route data for the row
-        Route route = routes.get(position);
+        // getting tour data for the row
+        Tour tour = tours.get(position);
 
         // attributes
-        thumbnail.setImageUrl(route.getThumbnailUrl(), imageLoader);
-        name.setText(route.getName());
-        description.setText(route.getDescription());
+        thumbnail.setImageUrl(tour.getThumbnailUrl(), imageLoader);
+        name.setText(tour.getName());
+        description.setText(tour.getDescription());
 
         return convertView;
     }
