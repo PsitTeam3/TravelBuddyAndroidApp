@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Tour tour = tours.get(position);
 
-                Intent detailIntent = new Intent(context, RouteDetailActivity.class);
+                Intent detailIntent = new Intent(context, TourDetailActivity.class);
 
                 detailIntent.putExtra("name", tour.getName());
                 detailIntent.putExtra("detailDescription", tour.getDetailDescription());
@@ -90,6 +90,7 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    // TODO(async) hide http requests in CompletableFuture
     @NonNull
     private JsonArrayRequest getJsonRequest(String url) {
         return new JsonArrayRequest(url,
