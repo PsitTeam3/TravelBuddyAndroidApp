@@ -21,17 +21,20 @@ public class Map {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void updatePosition(Location location) {
-        RequestQueuer.aRequest().queueCurrentRoute(TAG, this::setRoute);
+        RequestQueuer.aRequest().queueCurrentRoute(TAG, location, this::drawRoute);
         updateMarker(location);
     }
 
     private void updateMarker(Location location) {
         LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(position).title("Your position"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 17.0f));
     }
 
-    public void setRoute(Route route) {
-        mMap.addPolyline(new PolylineOptions().addAll(route.getLatLngs()));
+    public Map drawRoute(Route route) {
+        if (route != null) {
+            mMap.addPolyline(new PolylineOptions().addAll(route.getPoints()));
+        }
+        return this;
     }
 }

@@ -1,14 +1,13 @@
-package group3.psit3.zhaw.ch.travelbuddy;
+package group3.psit3.zhaw.ch.travelbuddy.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.view.Menu;
 import android.widget.ListView;
+import group3.psit3.zhaw.ch.travelbuddy.R;
 import group3.psit3.zhaw.ch.travelbuddy.adapter.CustomListAdapter;
 import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
@@ -22,7 +21,6 @@ public class MainActivity extends Activity {
     private ProgressDialog pDialog;
     private CustomListAdapter mAdapter;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //android.os.Debug.waitForDebugger();

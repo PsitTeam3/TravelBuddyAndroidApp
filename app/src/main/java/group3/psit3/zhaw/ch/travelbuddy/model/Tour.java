@@ -73,4 +73,7 @@ public class Tour implements Serializable {
         return gson.fromJson(response, collectionType);
     }
 
+    public int getId() {
+        return id;
+    }
 }

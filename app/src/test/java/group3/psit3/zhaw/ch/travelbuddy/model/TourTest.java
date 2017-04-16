@@ -11,7 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TourTest {
 
     @Test
-    public void test() throws Exception {
+    public void testParseTourListYieldsValidTourList() throws Exception {
         String mockResponse = MockData.TOUR_RESPONSE;
         Tour tour1 = new Tour()
                 .setName("Zürich Historical City Tour")

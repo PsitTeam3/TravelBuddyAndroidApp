@@ -1,8 +1,11 @@
-package group3.psit3.zhaw.ch.travelbuddy;
+package group3.psit3.zhaw.ch.travelbuddy.activity;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -17,8 +20,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import group3.psit3.zhaw.ch.travelbuddy.model.Map;
-import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
+import group3.psit3.zhaw.ch.travelbuddy.R;
+import group3.psit3.zhaw.ch.travelbuddy.model.*;
+import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
 import java.util.Arrays;
 
@@ -27,17 +31,20 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.FusedLocationApi;
 
 public class TourActivity extends FragmentActivity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
-
-    public static final int MY_LOCATION_REQUEST_CODE = 42;
+    private static final int REQUEST_LOCATION = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final String TAG = TourActivity.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
     private Map mMap;
+    private Route mRoute;
+    private Progress mProgress;
+    private Location mLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.mProgress = new Progress();
         setContentView(R.layout.route);
-
-        Tour tour = (Tour) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model");
 
 
         if (mGoogleApiClient == null) {
@@ -57,19 +64,31 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     @Override
     public void onConnected(@Nullable Bundle connectionHint) {
         if (!hasLocationPermission()) {
-            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, MY_LOCATION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
             return;
         }
         //noinspection MissingPermission
-        FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mLocation = FusedLocationApi.getLastLocation(mGoogleApiClient);
         startLocationUpdates(createLocationRequest());
 
+        Tour tour = (Tour) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour");
+        RequestQueuer.aRequest().queueStartTour(TAG, tour, mLocation, this::onReceiveCurrentRoute);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mProgress.add(imageBitmap);
+        }
 
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == MY_LOCATION_REQUEST_CODE && Arrays.equals(grantResults, new int[]{PackageManager.PERMISSION_GRANTED, PackageManager.PERMISSION_GRANTED})) {
+        if (requestCode == REQUEST_LOCATION && Arrays.equals(grantResults, new int[]{PackageManager.PERMISSION_GRANTED, PackageManager.PERMISSION_GRANTED})) {
             //noinspection MissingPermission
             FusedLocationApi.getLastLocation(mGoogleApiClient);
             startLocationUpdates(createLocationRequest());
@@ -79,21 +98,12 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     @Override
     public void onLocationChanged(Location location) {
         mMap.updatePosition(location);
+        RequestQueuer.aRequest().queueCurrentRoute(TAG, location, this::onReceiveCurrentRoute);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        this.mMap = new Map(googleMap);
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        this.mMap = new Map(googleMap).drawRoute(mRoute);
     }
 
     protected void startLocationUpdates(LocationRequest locationRequest) {
@@ -120,8 +130,43 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         return mLocationRequest;
     }
 
+    private void onReceiveCurrentRoute(Route route) {
+        this.mRoute = route;
+        mMap.drawRoute(route);
+
+        if (mRoute.isInPoiReach()) {
+            dispatchTakePictureIntent();
+            RequestQueuer.aRequest().queueIsPhotoValid(TAG, mLocation, this::onReceivePhotoValidation);
+        }
+    }
+
+    private void onReceivePhotoValidation(PhotoStatus status) {
+        if (status.equals(PhotoStatus.OK)) {
+            // TODO show some dialog to confirm photo
+        } else {
+            dispatchTakePictureIntent();
+        }
+    }
+
     private boolean hasLocationPermission() {
         return (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // TODO
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // TODO
     }
 }
