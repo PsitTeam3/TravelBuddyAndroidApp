@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 public class TourDetailActivity extends Activity {
-    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

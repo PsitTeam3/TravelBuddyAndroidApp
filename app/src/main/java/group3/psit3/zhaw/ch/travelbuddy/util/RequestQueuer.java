@@ -24,7 +24,7 @@ public class RequestQueuer {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void queueCurrentRoute(String TAG, Consumer<Route> routeSetter) {
         JsonArrayRequest req = new JsonArrayRequest(BASE_URL + CURRENT_ROUTE,
-                response -> routeSetter.accept(Route.fromJsonArray(response)),
+                response -> routeSetter.accept(Route.fromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
@@ -32,7 +32,7 @@ public class RequestQueuer {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void queueTourList(String TAG, Consumer<List<Tour>> tourListSetter) {
         JsonArrayRequest req = new JsonArrayRequest(BASE_URL + TOURS,
-                response -> tourListSetter.accept(Tour.listFromJsonArray(response)),
+                response -> tourListSetter.accept(Tour.listFromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }

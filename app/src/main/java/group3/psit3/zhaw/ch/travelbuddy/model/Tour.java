@@ -1,16 +1,32 @@
 package group3.psit3.zhaw.ch.travelbuddy.model;
 
 
-import android.util.Log;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 
 public class Tour {
-    private String name, description, detailDescription, thumbnailUrl;
+
+    private static final String TAG = Tour.class.getSimpleName();
+
+    @SerializedName("Id")
+    private int id;
+    @SerializedName("Name")
+    private String name;
+    @SerializedName("Description")
+    private String description;
+    @SerializedName("DetailDescription")
+    private String detailDescription;
+    @SerializedName("Country")
+    private String country;
+    @SerializedName("City")
+    private String city;
+    private String thumbnailUrl;
 
     public String getName() {
         return name;
@@ -20,20 +36,24 @@ public class Tour {
         return detailDescription;
     }
 
-    public void setName(String name) {
+    public Tour setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public void setDescription(String description) {
+    public Tour setDescription(String description) {
         this.description = description;
+        return this;
     }
 
-    public void setDetailDescription(String detailDescription) {
+    public Tour setDetailDescription(String detailDescription) {
         this.detailDescription = detailDescription;
+        return this;
     }
 
-    public void setThumbnailUrl(String thumbnailUrl) {
+    public Tour setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
+        return this;
     }
 
     public String getThumbnailUrl() {
@@ -44,29 +64,10 @@ public class Tour {
         return description;
     }
 
-    public static List<Tour> listFromJsonArray(JSONArray response) {
-        List<Tour> result = new ArrayList<>();
-        // Parsing json
-        for (int i = 0; i < response.length(); i++) {
-            try {
-
-                JSONObject obj = response.getJSONObject(i);
-                Tour tour = new Tour();
-                tour.setName(obj.getString("Name"));
-                tour.setDescription(obj.getString("Description"));
-                tour.setDetailDescription(obj.getString("DetailDescription"));
-                // tour.setThumbnailUrl(obj.getString("Image"));
-                tour.setThumbnailUrl("http://api.androidhive.info/json/movies/1.jpg");
-
-                // adding movie to movies array
-                result.add(tour);
-
-            } catch (JSONException ex) {
-                Log.e("Tour.class", String.format("Failed to parse json: %s", ex.getMessage()));
-            }
-
-        }
-        return result;
+    public static List<Tour> listFromJson(String response) {
+        Gson gson = new GsonBuilder().create();
+        Type collectionType = new TypeToken<Collection<Tour>>(){}.getType();
+        return gson.fromJson(response, collectionType);
     }
 
 }
