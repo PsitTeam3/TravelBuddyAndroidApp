@@ -8,6 +8,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+import group3.psit3.zhaw.ch.travelbuddy.util.RequestBuilder;
 import group3.psit3.zhaw.ch.travelbuddy.util.LruBitmapCache;
 
 public class AppController extends Application {
@@ -16,6 +17,7 @@ public class AppController extends Application {
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
+    private RequestBuilder mRequestBuilder;
 
     private static AppController mInstance;
 
@@ -60,5 +62,12 @@ public class AppController extends Application {
         }
 
         return mRequestQueue;
+    }
+
+    public RequestBuilder getRequestBuilder() {
+        if (mRequestBuilder == null) {
+            mRequestBuilder = new RequestBuilder();
+        }
+        return mRequestBuilder;
     }
 }

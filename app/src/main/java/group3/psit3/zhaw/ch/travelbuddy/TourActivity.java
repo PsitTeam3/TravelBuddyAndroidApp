@@ -14,12 +14,10 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import group3.psit3.zhaw.ch.travelbuddy.model.Map;
 
 import java.util.Arrays;
 
@@ -31,8 +29,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
 
     public static final int MY_LOCATION_REQUEST_CODE = 42;
     private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
-    private GoogleMap mMap;
+    private Map mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +50,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
 
     }
 
-    // TODO(async) hide location updates in CompletableFuture
     @Override
     public void onConnected(@Nullable Bundle connectionHint) {
         if (!hasLocationPermission()) {
@@ -61,7 +57,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
             return;
         }
         //noinspection MissingPermission
-        mLastLocation = FusedLocationApi.getLastLocation(mGoogleApiClient);
+        FusedLocationApi.getLastLocation(mGoogleApiClient);
         startLocationUpdates(createLocationRequest());
 
 
@@ -71,21 +67,19 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == MY_LOCATION_REQUEST_CODE && Arrays.equals(grantResults, new int[]{PackageManager.PERMISSION_GRANTED, PackageManager.PERMISSION_GRANTED})) {
             //noinspection MissingPermission
-            mLastLocation = FusedLocationApi.getLastLocation(mGoogleApiClient);
+            FusedLocationApi.getLastLocation(mGoogleApiClient);
             startLocationUpdates(createLocationRequest());
         }
     }
 
-    // TODO(async) hide location updates in CompletableFuture
     @Override
     public void onLocationChanged(Location location) {
-        System.out.println(location);
-        updatePosition(location);
+        mMap.updatePosition(location);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        this.mMap = googleMap;
+        this.mMap = new Map(googleMap);
     }
 
     @Override
@@ -121,19 +115,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return mLocationRequest;
     }
-
-    private void updatePosition(Location location) {
-        updateMarker(location);
-    }
-
-    private void updateMarker(Location location) {
-        if (this.mMap != null) {
-            LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(position).title("Zurich Marker"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-        }
-    }
-
 
     private boolean hasLocationPermission() {
         return (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
