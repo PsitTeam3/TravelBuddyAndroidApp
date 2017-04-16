@@ -7,15 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-
-import java.util.List;
-
 import group3.psit3.zhaw.ch.travelbuddy.R;
 import group3.psit3.zhaw.ch.travelbuddy.app.AppController;
 import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomListAdapter extends BaseAdapter {
     private Activity activity;
@@ -23,9 +22,9 @@ public class CustomListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-    public CustomListAdapter(Activity activity, List<Tour> tours) {
+    public CustomListAdapter(Activity activity) {
         this.activity = activity;
-        this.tours = tours;
+        this.tours = new ArrayList<>();
     }
 
     @Override
@@ -70,5 +69,14 @@ public class CustomListAdapter extends BaseAdapter {
         description.setText(tour.getDescription());
 
         return convertView;
+    }
+
+    public void setTours(List<Tour> tours) {
+        this.tours = tours;
+        notifyDataSetChanged();
+    }
+
+    public List<Tour> getTours() {
+        return tours;
     }
 }

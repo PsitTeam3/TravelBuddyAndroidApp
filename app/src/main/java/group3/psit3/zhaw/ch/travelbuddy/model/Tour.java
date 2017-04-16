@@ -1,6 +1,7 @@
 package group3.psit3.zhaw.ch.travelbuddy.model;
 
 
+import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +36,14 @@ public class Tour {
         this.thumbnailUrl = thumbnailUrl;
     }
 
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public static List<Tour> listFromJsonArray(JSONArray response) {
         List<Tour> result = new ArrayList<>();
         // Parsing json
@@ -52,11 +61,12 @@ public class Tour {
                 // adding movie to movies array
                 result.add(tour);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } catch (JSONException ex) {
+                Log.e("Tour.class", String.format("Failed to parse json: %s", ex.getMessage()));
             }
 
         }
-        return new ArrayList<>();
+        return result;
     }
+
 }

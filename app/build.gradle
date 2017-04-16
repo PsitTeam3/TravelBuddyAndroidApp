@@ -6,7 +6,7 @@ android {
     defaultConfig {
         multiDexEnabled true
         applicationId "group3.psit3.zhaw.ch.travelbuddy"
-        minSdkVersion 15
+        minSdkVersion 24
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -41,5 +41,4 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.volley:volley:1.0.0'
     testCompile 'junit:junit:4.12'
-    provided "org.projectlombok:lombok:1.12.6"
 }

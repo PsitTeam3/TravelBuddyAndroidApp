@@ -8,35 +8,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.view.Menu;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import group3.psit3.zhaw.ch.travelbuddy.adapter.CustomListAdapter;
 import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
-import group3.psit3.zhaw.ch.travelbuddy.util.RequestBuilder;
+import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity {
     // Log tag
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    // Movies json TEMPORARY_HARDCODED_URL
     private ProgressDialog pDialog;
-    private List<Tour> mTours = new ArrayList<>();
-    private ListView listView;
-    private CustomListAdapter adapter;
+    private CustomListAdapter mAdapter;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        android.os.Debug.waitForDebugger();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listView = (ListView) findViewById(R.id.list);
-        adapter = new CustomListAdapter(this, mTours);
-        listView.setAdapter(adapter);
+        ListView listView = (ListView) findViewById(R.id.list);
+        mAdapter = new CustomListAdapter(this);
+        listView.setAdapter(mAdapter);
 
         pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
@@ -47,31 +42,24 @@ public class MainActivity extends Activity {
         // getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1b1b1b")));
 
         // Creating volley request obj && Adding request to request queue
-        RequestBuilder.aRequest().setTourList(this::setTourList);
+        RequestQueuer.aRequest().queueTourList(TAG, this::setTourList);
 
         final Context context = this;
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Tour tour = mAdapter.getTours().get(position);
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Tour tour = mTours.get(position);
+            Intent detailIntent = new Intent(context, TourDetailActivity.class);
 
-                Intent detailIntent = new Intent(context, TourDetailActivity.class);
+            detailIntent.putExtra("name", tour.getName());
+            detailIntent.putExtra("detailDescription", tour.getDetailDescription());
 
-                detailIntent.putExtra("name", tour.getName());
-                detailIntent.putExtra("detailDescription", tour.getDetailDescription());
-
-                startActivity(detailIntent);
-            }
-
+            startActivity(detailIntent);
         });
     }
 
     public void setTourList(List<Tour> tourList) {
         hidePDialog();
-        mTours = tourList;
-        adapter.notifyDataSetChanged();
-
+        mAdapter.setTours(tourList);
     }
 
     @Override

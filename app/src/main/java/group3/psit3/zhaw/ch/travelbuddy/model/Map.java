@@ -8,19 +8,20 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import group3.psit3.zhaw.ch.travelbuddy.util.RequestBuilder;
+import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
 public class Map {
+    private static final String TAG = Map.class.getSimpleName();
+
     private final GoogleMap mMap;
 
     public Map(GoogleMap googleMap) {
         this.mMap = googleMap;
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void updatePosition(Location location) {
-        RequestBuilder.aRequest().setCurrentRoute(this::setRoute);
+        RequestQueuer.aRequest().queueCurrentRoute(TAG, this::setRoute);
         updateMarker(location);
     }
 
