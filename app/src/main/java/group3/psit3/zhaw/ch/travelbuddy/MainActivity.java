@@ -25,9 +25,10 @@ public class MainActivity extends Activity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        android.os.Debug.waitForDebugger();
+        //android.os.Debug.waitForDebugger();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         ListView listView = (ListView) findViewById(R.id.list);
         mAdapter = new CustomListAdapter(this);
@@ -50,8 +51,7 @@ public class MainActivity extends Activity {
 
             Intent detailIntent = new Intent(context, TourDetailActivity.class);
 
-            detailIntent.putExtra("name", tour.getName());
-            detailIntent.putExtra("detailDescription", tour.getDetailDescription());
+            detailIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour", tour);
 
             startActivity(detailIntent);
         });

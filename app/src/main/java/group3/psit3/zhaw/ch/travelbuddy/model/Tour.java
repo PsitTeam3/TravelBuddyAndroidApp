@@ -6,13 +6,16 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
-public class Tour {
+public class Tour implements Serializable {
 
     private static final String TAG = Tour.class.getSimpleName();
+
+    private static final long serialVersionUID = 7526471155622776147L;
 
     @SerializedName("Id")
     private int id;
