@@ -18,6 +18,9 @@ to issue following commands:`
 * `./gradlew build` builds the apks to `app/build/output/apk/app-debug.apk` and `app/build/output/apk/app-release-unsigned.apk`.
 * `./gradlew test` runs all unit tests
 
+## Emulator
+Installing the Android SDK with brew `brew install android-sdk`, you can run virtual devices `emulator -avd <device name>`.
+
 ## Troubleshoot
 
 If you encounter any problems regarding Intel HAXM virtualization issues: stop docker machine

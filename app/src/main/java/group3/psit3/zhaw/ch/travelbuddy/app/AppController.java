@@ -8,6 +8,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 import group3.psit3.zhaw.ch.travelbuddy.util.LruBitmapCache;
 
 public class AppController extends Application {
@@ -16,6 +17,7 @@ public class AppController extends Application {
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
+    private RequestQueuer mRequestQueuer;
 
     private static AppController mInstance;
 
@@ -43,11 +45,6 @@ public class AppController extends Application {
         getRequestQueue().add(req);
     }
 
-    public <T> void addToRequestQueue(Request<T> req) {
-        req.setTag(TAG);
-        getRequestQueue().add(req);
-    }
-
     public void cancelPendingRequests(Object tag) {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
@@ -60,5 +57,12 @@ public class AppController extends Application {
         }
 
         return mRequestQueue;
+    }
+
+    public RequestQueuer getRequestBuilder() {
+        if (mRequestQueuer == null) {
+            mRequestQueuer = new RequestQueuer();
+        }
+        return mRequestQueuer;
     }
 }
