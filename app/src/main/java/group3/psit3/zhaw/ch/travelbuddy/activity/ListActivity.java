@@ -47,7 +47,7 @@ public class ListActivity extends Activity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Tour tour = mAdapter.getTours().get(position);
 
-            Intent detailIntent = new Intent(context, TourDetailActivity.class);
+            Intent detailIntent = new Intent(context, DetailActivity.class);
 
             detailIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour", tour);
 

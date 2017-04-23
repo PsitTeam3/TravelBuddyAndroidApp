@@ -8,12 +8,12 @@ import android.widget.TextView;
 import group3.psit3.zhaw.ch.travelbuddy.R;
 import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 
-public class TourDetailActivity extends Activity {
+public class DetailActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_route_detail);
+        setContentView(R.layout.activity_detail);
 
         Tour tour = (Tour) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour");
         String name = tour.getName();

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="group3.psit3.zhaw.ch.travelbuddy.activity.TourDetailActivity"
+    tools:context="group3.psit3.zhaw.ch.travelbuddy.activity.DetailActivity"
     android:padding="8dp">
 
     <TextView
