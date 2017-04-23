@@ -57,7 +57,6 @@ public class DetailActivity extends Activity {
     }
 
     private void setPoiList(List<Poi> pois) {
-        System.out.println(pois);
         hidePDialog();
     }
 
