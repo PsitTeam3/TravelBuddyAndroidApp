@@ -14,9 +14,9 @@ import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class ListActivity extends Activity {
     // Log tag
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = ListActivity.class.getSimpleName();
 
     private ProgressDialog pDialog;
     private CustomListAdapter mAdapter;
@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         //android.os.Debug.waitForDebugger();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_list);
 
 
         ListView listView = (ListView) findViewById(R.id.list);
@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Tour tour = mAdapter.getTours().get(position);
 
-            Intent detailIntent = new Intent(context, TourDetailActivity.class);
+            Intent detailIntent = new Intent(context, DetailActivity.class);
 
             detailIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour", tour);
 
