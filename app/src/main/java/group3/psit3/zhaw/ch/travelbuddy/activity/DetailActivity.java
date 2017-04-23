@@ -44,19 +44,10 @@ public class DetailActivity extends Activity {
         TextView nameView = (TextView) findViewById(R.id.name);
         TextView detailDescriptionView = (TextView) findViewById(R.id.detailDescription);
 
-        final Context context = this;
-        detailDescriptionView.setOnTouchListener((v, event) -> {
-            Intent tourIntent = new Intent(context, TourActivity.class);
-
-            tourIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour", tour);
-
-            startActivity(tourIntent);
-            return true;
-        });
-
         nameView.setText(name);
         detailDescriptionView.setText(detailDescription);
 
+        final Context context = this;
         button = (Button) findViewById(R.id.startTourButton);
         button.setOnClickListener(arg0 -> {
             Intent tourIntent = new Intent(context, TourActivity.class);
