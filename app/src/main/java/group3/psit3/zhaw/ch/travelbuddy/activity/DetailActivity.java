@@ -5,13 +5,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
 
 import group3.psit3.zhaw.ch.travelbuddy.R;
 import group3.psit3.zhaw.ch.travelbuddy.model.Poi;
-import group3.psit3.zhaw.ch.travelbuddy.model.Route;
 import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
@@ -20,6 +21,7 @@ public class DetailActivity extends Activity {
     private static final String TAG = DetailActivity.class.getSimpleName();
 
     private ProgressDialog pDialog;
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,13 @@ public class DetailActivity extends Activity {
 
         nameView.setText(name);
         detailDescriptionView.setText(detailDescription);
+
+        button = (Button) findViewById(R.id.startTourButton);
+        button.setOnClickListener(arg0 -> {
+            Intent tourIntent = new Intent(context, TourActivity.class);
+            tourIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour", tour);
+            startActivity(tourIntent);
+        });
     }
 
     private void setPoiList(List<Poi> pois) {
