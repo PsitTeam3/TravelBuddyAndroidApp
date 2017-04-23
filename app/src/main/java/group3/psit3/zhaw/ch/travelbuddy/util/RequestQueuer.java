@@ -6,6 +6,7 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.JsonArrayRequest;
 import group3.psit3.zhaw.ch.travelbuddy.app.AppController;
 import group3.psit3.zhaw.ch.travelbuddy.model.PhotoStatus;
+import group3.psit3.zhaw.ch.travelbuddy.model.Poi;
 import group3.psit3.zhaw.ch.travelbuddy.model.Route;
 import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 import org.json.JSONArray;
@@ -21,6 +22,7 @@ public class RequestQueuer {
     private static final String TOURS = "/tours/gettours";
     private static final String START_TOUR = "/usertour/startusertour";
     private static final String VALIDATE_PHOTO = "/isPhotoValid";
+    private static final String ROUTE_POIS = "/poi/getpoisbytour?id=";
 
     public static RequestQueuer aRequest() {
         return AppController.getInstance().getRequestBuilder();
@@ -38,6 +40,13 @@ public class RequestQueuer {
     public void queueTourList(String TAG, Consumer<List<Tour>> tourListSetter) {
         JsonArrayRequest req = new JsonArrayRequest(BASE_URL + TOURS,
                 response -> tourListSetter.accept(Tour.listFromJson(response.toString())),
+                error -> Log.e(TAG, error.getMessage()));
+        AppController.getInstance().addToRequestQueue(req, TAG);
+    }
+
+    public void queuePoiList(String TAG, Tour tour, Consumer<List<Poi>> poiListSetter) {
+        JsonArrayRequest req = new JsonArrayRequest(BASE_URL + ROUTE_POIS + tour.getId(),
+                response -> poiListSetter.accept(Poi.listFromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
