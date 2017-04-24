@@ -30,6 +30,7 @@ public class Tour implements Serializable {
     private String country;
     @SerializedName("City")
     private String city;
+    @SerializedName("Image")
     private String thumbnailUrl;
 
     private List<Poi> pois;

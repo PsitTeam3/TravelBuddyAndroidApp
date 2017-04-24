@@ -24,7 +24,7 @@ public class TourOverview {
             markerOptions.forEach(mMap::addMarker);
         }
         if (pois.size() > 0) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pois.get(0).getLatLng(), 10.0f));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pois.get(0).getLatLng(), 17.0f));
         }
         return this;
     }
