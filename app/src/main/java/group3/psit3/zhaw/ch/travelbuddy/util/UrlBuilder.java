@@ -6,7 +6,7 @@ import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 public class UrlBuilder {
 
     public static final String BASE_URL = "http://travelbuddy5.azurewebsites.net/api";
-    private static final String CURRENT_ROUTE = "/route";
+    private static final String CURRENT_POI = "/POI/GetRouteToNextPOI";
     private static final String TOURS = "/tours/gettours";
     private static final String START_TOUR = "/usertour/startusertour";
     private static final String VALIDATE_PHOTO = "/poi/isnextpoiinrange";
@@ -17,8 +17,9 @@ public class UrlBuilder {
         return new UrlBuilder();
     }
 
-    public UrlBuilder currentRoute() {
-        this.url = BASE_URL + CURRENT_ROUTE;
+    public UrlBuilder currentRoute(LatLng location) {
+        this.url = String.format(BASE_URL + CURRENT_POI + "?userID=%s&currentLatitude=%s&currentLongitude=%s",
+                5, location.latitude, location.longitude);
         return this;
     }
 

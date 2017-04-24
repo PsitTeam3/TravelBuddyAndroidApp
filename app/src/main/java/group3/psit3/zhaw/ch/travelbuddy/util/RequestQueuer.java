@@ -6,10 +6,7 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.google.android.gms.maps.model.LatLng;
 import group3.psit3.zhaw.ch.travelbuddy.app.AppController;
-import group3.psit3.zhaw.ch.travelbuddy.model.PhotoStatus;
-import group3.psit3.zhaw.ch.travelbuddy.model.Poi;
-import group3.psit3.zhaw.ch.travelbuddy.model.PoiResponse;
-import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
+import group3.psit3.zhaw.ch.travelbuddy.model.*;
 import org.json.JSONArray;
 
 import java.util.List;
@@ -21,11 +18,9 @@ public class RequestQueuer {
         return AppController.getInstance().getRequestBuilder();
     }
 
-    public void queueCurrentPoi(String TAG, Location location, Consumer<Poi> poiSetter) {
-        JSONArray body = new SimpleJsonBuilder().setProperty("lat", location.getLatitude()).setProperty("long", location.getLongitude()).toJsonArray();
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, UrlBuilder.anUrl().currentRoute().build(),
-                body,
-                response -> poiSetter.accept(PoiResponse.fromJson(response.toString())),
+    public void queueCurrentRoute(String TAG, Location location, Consumer<List<LatLng>> poiSetter) {
+        JsonArrayRequest req = new JsonArrayRequest(UrlBuilder.anUrl().currentRoute(new LatLng(location.getLatitude(), location.getLongitude())).build(),
+                response -> poiSetter.accept(RouteResponse.listFromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
