@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 import group3.psit3.zhaw.ch.travelbuddy.app.AppController;
 import group3.psit3.zhaw.ch.travelbuddy.model.PhotoStatus;
 import group3.psit3.zhaw.ch.travelbuddy.model.Poi;
+import group3.psit3.zhaw.ch.travelbuddy.model.PoiResponse;
 import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 import org.json.JSONArray;
 
@@ -20,11 +21,11 @@ public class RequestQueuer {
         return AppController.getInstance().getRequestBuilder();
     }
 
-    public void queueCurrentPoi(String TAG, Location location, Consumer<Poi> routeSetter) {
+    public void queueCurrentPoi(String TAG, Location location, Consumer<Poi> poiSetter) {
         JSONArray body = new SimpleJsonBuilder().setProperty("lat", location.getLatitude()).setProperty("long", location.getLongitude()).toJsonArray();
         JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, UrlBuilder.anUrl().currentRoute().build(),
                 body,
-                response -> routeSetter.accept(Poi.fromJson(response.toString())),
+                response -> poiSetter.accept(PoiResponse.fromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
@@ -49,7 +50,7 @@ public class RequestQueuer {
         JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST,
                 UrlBuilder.anUrl().startTour(new LatLng(location.getLatitude(), location.getLongitude()), tour).build(),
                 reqBody,
-                response -> routeSetter.accept(Poi.fromJson(response.toString())),
+                response -> routeSetter.accept(PoiResponse.fromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }

@@ -41,7 +41,7 @@ public class UrlBuilderTest {
         LatLng location = new LatLng(42, 24);
         Tour tour = new Tour().setId(3);
         assertThat(testObj.startTour(location, tour).build(), is(
-                String.format(BASE_URL + "/usertour/startusertour?userID=%s&tourdID=%s&currentLatitude=%s&currentLongitude=%s",
+                String.format(BASE_URL + "/usertour/startusertour?userID=%s&tourID=%s&currentLatitude=%s&currentLongitude=%s",
                         5, 3, 42.0, 24.0)));
     }
 

@@ -45,10 +45,6 @@ public class Poi implements Serializable {
         return longitude;
     }
 
-    public static Poi fromJson (String response) {
-        Gson gson = new GsonBuilder().create();
-        return gson.fromJson(response, Poi.class);
-    }
 
     public static List<Poi> listFromJson(String response) {
         Gson gson = new GsonBuilder().create();

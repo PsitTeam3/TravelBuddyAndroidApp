@@ -72,7 +72,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         startLocationUpdates(createLocationRequest());
 
         Tour tour = (Tour) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour");
-        RequestQueuer.aRequest().queueStartTour(TAG, tour, mLocation, this::onReceiveCurrentRoute);
+        RequestQueuer.aRequest().queueStartTour(TAG, tour, mLocation, this::onReceiveCurrentPoi);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     @Override
     public void onLocationChanged(Location location) {
         mMap.updatePosition(location);
-        RequestQueuer.aRequest().queueCurrentPoi(TAG, location, this::onReceiveCurrentRoute);
+        RequestQueuer.aRequest().queueCurrentPoi(TAG, location, this::onReceiveCurrentPoi);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         return mLocationRequest;
     }
 
-    private void onReceiveCurrentRoute(Poi poi) {
+    private void onReceiveCurrentPoi(Poi poi) {
         this.mPoi = poi;
         mMap.drawRoute(poi);
 
