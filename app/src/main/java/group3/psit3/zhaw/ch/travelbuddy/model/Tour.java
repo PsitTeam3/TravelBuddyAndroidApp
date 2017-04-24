@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,6 +31,12 @@ public class Tour implements Serializable {
     @SerializedName("City")
     private String city;
     private String thumbnailUrl;
+
+    private List<Poi> pois;
+
+    public Tour() {
+        this.pois = new ArrayList<>();
+    }
 
     public String getName() {
         return name;
@@ -75,5 +82,18 @@ public class Tour implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public void setPois(List<Poi> pois) {
+        this.pois = pois;
+    }
+
+    public List<Poi> getPois() {
+        return pois;
+    }
+
+    public Tour setId(int id) {
+        this.id = id;
+        return this;
     }
 }

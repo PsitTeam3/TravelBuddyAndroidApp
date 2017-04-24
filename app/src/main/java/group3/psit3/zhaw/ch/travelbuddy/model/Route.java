@@ -1,19 +1,23 @@
 package group3.psit3.zhaw.ch.travelbuddy.model;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Route {
-    private Iterable<LatLng> points;
-    private boolean inPoiReach;
+
+    @SerializedName("RouteToNextPOI")
+    private List<LatLong> points;
+
+    public List<LatLng> getPoints() {
+        return points.stream().map(cur -> new LatLng(cur.getLat(), cur.getLong())).collect(Collectors.toList());
+    }
 
     public Route() {
         this.points = new ArrayList<>();
-    }
-
-    public Iterable<LatLng> getPoints() {
-        return points;
     }
 
     public static Route fromJson(String response) {
@@ -21,6 +25,7 @@ public class Route {
     }
 
     public boolean isInPoiReach() {
-        return inPoiReach;
+        // TODO implement
+        throw new UnsupportedOperationException();
     }
 }

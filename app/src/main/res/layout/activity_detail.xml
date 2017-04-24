@@ -23,11 +23,13 @@
         app:layout_constraintTop_toBottomOf="@+id/name"
         tools:layout_editor_absoluteX="0dp" />
 
-    <com.google.android.gms.maps.MapView
+    <fragment
         android:id="@+id/mapView"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="490dp"
         android:layout_marginTop="8dp"
+        tools:layout="@layout/activity_maps"
         app:layout_constraintTop_toBottomOf="@+id/detailDescription" />
 
     <Button

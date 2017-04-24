@@ -1,6 +1,7 @@
 package group3.psit3.zhaw.ch.travelbuddy.model;
 
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
@@ -45,8 +46,7 @@ public class Poi implements Serializable {
 
     public static Poi fromJson (String response) {
         Gson gson = new GsonBuilder().create();
-        Type collectionType = new TypeToken<Collection<Poi>>(){}.getType();
-        return gson.fromJson(response, collectionType);
+        return gson.fromJson(response, Poi.class);
     }
 
     public static List<Poi> listFromJson(String response) {
@@ -54,4 +54,10 @@ public class Poi implements Serializable {
         Type collectionType = new TypeToken<Collection<Poi>>(){}.getType();
         return gson.fromJson(response, collectionType);
     }
+
+    public LatLng getLatLng() {
+        return new LatLng(latitude, longitude);
+    }
+
+
 }

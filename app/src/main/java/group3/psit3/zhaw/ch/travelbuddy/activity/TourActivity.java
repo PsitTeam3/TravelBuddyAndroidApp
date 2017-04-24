@@ -73,7 +73,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
 
         Tour tour = (Tour) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour");
         RequestQueuer.aRequest().queueStartTour(TAG, tour, mLocation, this::onReceiveCurrentRoute);
-
     }
 
     @Override
