@@ -20,7 +20,7 @@ public class UrlBuilderTest {
 
     @Test
     public void currentRoute() throws Exception {
-        assertThat(testObj.currentRoute(new LatLng(location.getLatitude(), location.getLongitude())).build(), is(BASE_URL + "/route"));
+        assertThat(testObj.currentRoute(new LatLng(12, 32)).build(), is(BASE_URL + "/POI/GetRouteToNextPOI?userID=5&currentLatitude=12.0&currentLongitude=32.0"));
     }
 
     @Test
