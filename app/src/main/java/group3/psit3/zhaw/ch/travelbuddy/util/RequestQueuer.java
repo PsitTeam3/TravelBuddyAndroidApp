@@ -4,61 +4,55 @@ import android.location.Location;
 import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.google.android.gms.maps.model.LatLng;
 import group3.psit3.zhaw.ch.travelbuddy.app.AppController;
-import group3.psit3.zhaw.ch.travelbuddy.model.PhotoStatus;
-import group3.psit3.zhaw.ch.travelbuddy.model.Route;
-import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
+import group3.psit3.zhaw.ch.travelbuddy.model.*;
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 public class RequestQueuer {
 
-    private static final String BASE_URL = "http://travelbuddy5.azurewebsites.net/api";
-    private static final String CURRENT_ROUTE = "/route";
-    private static final String TOURS = "/tours/gettours";
-    private static final String START_TOUR = "/usertour/startusertour";
-    private static final String VALIDATE_PHOTO = "/isPhotoValid";
-
     public static RequestQueuer aRequest() {
         return AppController.getInstance().getRequestBuilder();
     }
 
-    public void queueCurrentRoute(String TAG, Location location, Consumer<Route> routeSetter) {
-        JSONArray body = new SimpleJsonBuilder().setProperty("lat", location.getLatitude()).setProperty("long", location.getLongitude()).toJsonArray();
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, BASE_URL + CURRENT_ROUTE,
-                body,
-                response -> routeSetter.accept(Route.fromJson(response.toString())),
+    public void queueCurrentRoute(String TAG, Location location, Consumer<List<LatLng>> poiSetter) {
+        JsonArrayRequest req = new JsonArrayRequest(UrlBuilder.anUrl().currentRoute(new LatLng(location.getLatitude(), location.getLongitude())).build(),
+                response -> poiSetter.accept(RouteResponse.listFromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
     public void queueTourList(String TAG, Consumer<List<Tour>> tourListSetter) {
-        JsonArrayRequest req = new JsonArrayRequest(BASE_URL + TOURS,
+        JsonArrayRequest req = new JsonArrayRequest(UrlBuilder.anUrl().allTours().build(),
                 response -> tourListSetter.accept(Tour.listFromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
-    public void queueStartTour(String TAG, Tour tour, Location location, Consumer<Route> routeSetter) {
+    public void queuePoiList(String TAG, Tour tour, Consumer<List<Poi>> poiListSetter) {
+        JsonArrayRequest req = new JsonArrayRequest(UrlBuilder.anUrl().poisOfTour(tour).build(),
+                response -> poiListSetter.accept(Poi.listFromJson(response.toString())),
+                error -> Log.e(TAG, error.getMessage()));
+        AppController.getInstance().addToRequestQueue(req, TAG);
+    }
+
+    public void queueStartTour(String TAG, Tour tour, Location location, Consumer<Poi> routeSetter) {
+        if (location == null) return;
         JSONArray reqBody = new JSONArray();
-        try {
-            reqBody = new JSONArray(String.format("{ id: %s, lat: %s, long: %s }", tour.getId(), location.getLatitude(), location.getLongitude()));
-        } catch (JSONException e) {
-            // falls through
-        }
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, BASE_URL + START_TOUR,
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST,
+                UrlBuilder.anUrl().startTour(new LatLng(location.getLatitude(), location.getLongitude()), tour).build(),
                 reqBody,
-                response -> routeSetter.accept(Route.fromJson(response.toString())),
+                response -> routeSetter.accept(PoiResponse.fromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
     public void queueIsPhotoValid(String TAG, Location location, Consumer<PhotoStatus> photoStatusSetter) {
-        JSONArray body = new SimpleJsonBuilder().setProperty("lat", location.getLatitude()).setProperty("long", location.getLongitude()).toJsonArray();
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, BASE_URL + VALIDATE_PHOTO,
+        JSONArray body = new JSONArray();
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, UrlBuilder.anUrl().validatePhoto(new LatLng(location.getLatitude(), location.getLongitude())).build(),
                 body,
                 response -> photoStatusSetter.accept(PhotoStatus.fromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));

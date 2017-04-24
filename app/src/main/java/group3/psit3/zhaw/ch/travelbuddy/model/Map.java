@@ -5,15 +5,17 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.*;
 import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
+
+import java.util.List;
 
 public class Map {
     private static final String TAG = Map.class.getSimpleName();
 
     private final GoogleMap mMap;
+    private Marker mMarker;
+    private Polyline mPolyline;
 
     public Map(GoogleMap googleMap) {
         this.mMap = googleMap;
@@ -27,13 +29,29 @@ public class Map {
 
     private void updateMarker(Location location) {
         LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(position).title("Your position"));
+        if (mMarker != null) {
+            mMarker.remove();
+        }
+        this.mMarker = mMap.addMarker(new MarkerOptions().position(position).title("Your position"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 17.0f));
     }
 
-    public Map drawRoute(Route route) {
+    public Map drawRoute(List<LatLng> route) {
         if (route != null) {
-            mMap.addPolyline(new PolylineOptions().addAll(route.getPoints()));
+            if (mPolyline != null) {
+                mPolyline.remove();
+            }
+            mPolyline = mMap.addPolyline(new PolylineOptions().addAll(route));
+        }
+        return this;
+    }
+
+    public Map drawRoute(Poi poi) {
+        if (poi != null) {
+            if (mPolyline != null) {
+                mPolyline.remove();
+            }
+            mMap.addPolyline(new PolylineOptions().addAll(poi.getRoute()));
         }
         return this;
     }

@@ -33,8 +33,7 @@ public class ListActivity extends Activity {
         listView.setAdapter(mAdapter);
 
         pDialog = new ProgressDialog(this);
-        // Showing progress dialog before making http request
-        pDialog.setMessage("Loading...");
+        pDialog.setMessage("Loading tours...");
         pDialog.show();
 
         // changing action bar color
