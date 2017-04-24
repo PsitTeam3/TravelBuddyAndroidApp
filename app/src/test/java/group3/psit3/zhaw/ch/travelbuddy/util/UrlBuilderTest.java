@@ -20,18 +20,18 @@ public class UrlBuilderTest {
 
     @Test
     public void currentRoute() throws Exception {
-        assertThat(testObj.currentRoute(), is(BASE_URL + "/route"));
+        assertThat(testObj.currentRoute().build(), is(BASE_URL + "/route"));
     }
 
     @Test
     public void allTours() throws Exception {
-        assertThat(testObj.allTours(), is(BASE_URL + "/tours/gettours"));
+        assertThat(testObj.allTours().build(), is(BASE_URL + "/tours/gettours"));
     }
 
     @Test
     public void validatePhoto() throws Exception {
         LatLng target = new LatLng(42, 24);
-        assertThat(testObj.validatePhoto(target), is(
+        assertThat(testObj.validatePhoto(target).build(), is(
                 String.format(BASE_URL + "/poi/isnextpoiinrange?latitude=%s&longitude=%s",
                         target.latitude, target.longitude)));
     }
@@ -40,7 +40,7 @@ public class UrlBuilderTest {
     public void startTour() throws Exception {
         LatLng location = new LatLng(42, 24);
         Tour tour = new Tour().setId(3);
-        assertThat(testObj.startTour(location, tour), is(
+        assertThat(testObj.startTour(location, tour).build(), is(
                 String.format(BASE_URL + "/usertour/startusertour?userID=%s&tourdID=%s&currentLatitude=%s&currentLongitude=%s",
                         5, 3, 42.0, 24.0)));
     }
@@ -48,6 +48,6 @@ public class UrlBuilderTest {
     @Test
     public void poisOfTour() throws Exception {
         Tour tour = new Tour().setId(42);
-        assertThat(testObj.poisOfTour(tour), is(BASE_URL + "/poi/getpoisbytour?id=" + 42));
+        assertThat(testObj.poisOfTour(tour).build(), is(BASE_URL + "/poi/getpoisbytour?id=" + 42));
     }
 }

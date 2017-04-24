@@ -1,14 +1,17 @@
 package group3.psit3.zhaw.ch.travelbuddy.model;
 
+import com.google.android.gms.maps.model.LatLng;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class PoiResponseTest {
+public class PoiTest {
 
-    private PoiResponse testObj;
+    private Poi testObj;
     public static String response = "{\n"+
             "  \"NextPOI\": {\n"+
             "    \"Id\": 15,\n"+
@@ -43,20 +46,18 @@ public class PoiResponseTest {
 
     @Test
     public void testParseFromJsonReturnsValidPoi() throws Exception {
-        Poi poi = testObj.getPoi();
-
-        assertThat(poi.getId(), is(15));
-        assertThat(poi.getDescription(), is("Old church, beautiful, has a tower to go up."));
-        assertThat(poi.getVisitDuration(), is(2400));
-        assertThat(poi.getLongitude(), is(47.379049));
-        assertThat(poi.getLatitude(), is(8.540338));
+        assertThat(testObj.getId(), is(15));
+        assertThat(testObj.getDescription(), is("Old church, beautiful, has a tower to go up."));
+        assertThat(testObj.getVisitDuration(), is(2400));
+        assertThat(testObj.getLongitude(), is(47.379049));
+        assertThat(testObj.getLatitude(), is(8.540338));
     }
 
     @Test
     public void testParseFromJsonHasValidRoute() throws Exception {
-        Route route = testObj.getRoute();
-        assertThat(route.getPoints().size(), is(4));
-        assertThat(route.getPoints().get(2), is(new LatLong(47.99992, 7.99962)));
+        List<LatLng> route = testObj.getRoute();
+        assertThat(route.size(), is(4));
+        assertThat(route.get(2), is(new LatLng(47.99992, 7.99962)));
     }
 
 }

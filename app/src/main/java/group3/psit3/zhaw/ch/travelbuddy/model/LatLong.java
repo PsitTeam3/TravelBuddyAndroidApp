@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class LatLong {
     @SerializedName("Latitude")
-    private double lon;
-    @SerializedName("Longitude")
     private double lat;
+    @SerializedName("Longitude")
+    private double lon;
 
     public LatLong(double lat, double lon) {
         this.lat = lat;

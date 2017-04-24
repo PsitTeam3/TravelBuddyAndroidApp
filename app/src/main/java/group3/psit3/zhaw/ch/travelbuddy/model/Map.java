@@ -21,7 +21,7 @@ public class Map {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void updatePosition(Location location) {
-        RequestQueuer.aRequest().queueCurrentRoute(TAG, location, this::drawRoute);
+        RequestQueuer.aRequest().queueCurrentPoi(TAG, location, this::drawRoute);
         updateMarker(location);
     }
 
@@ -31,9 +31,9 @@ public class Map {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 17.0f));
     }
 
-    public Map drawRoute(Route route) {
-        if (route != null) {
-            mMap.addPolyline(new PolylineOptions().addAll(route.getPoints()));
+    public Map drawRoute(Poi poi) {
+        if (poi != null) {
+            mMap.addPolyline(new PolylineOptions().addAll(poi.getRoute()));
         }
         return this;
     }

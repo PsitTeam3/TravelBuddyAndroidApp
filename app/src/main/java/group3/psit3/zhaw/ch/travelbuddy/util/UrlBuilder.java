@@ -11,30 +11,40 @@ public class UrlBuilder {
     private static final String START_TOUR = "/usertour/startusertour";
     private static final String VALIDATE_PHOTO = "/poi/isnextpoiinrange";
     private static final String ROUTE_POIS = "/poi/getpoisbytour?id=";
+    private String url;
 
     public static UrlBuilder anUrl() {
         return new UrlBuilder();
     }
 
-    public String currentRoute() {
-        return BASE_URL + CURRENT_ROUTE;
+    public UrlBuilder currentRoute() {
+        this.url = BASE_URL + CURRENT_ROUTE;
+        return this;
     }
 
-    public String allTours() {
-        return BASE_URL + TOURS;
+    public UrlBuilder allTours() {
+        this.url = BASE_URL + TOURS;
+        return this;
     }
 
-    public String validatePhoto(LatLng position) {
-        return String.format(UrlBuilder.BASE_URL + VALIDATE_PHOTO + "?latitude=%s&longitude=%s",
+    public UrlBuilder validatePhoto(LatLng position) {
+        this.url = String.format(UrlBuilder.BASE_URL + VALIDATE_PHOTO + "?latitude=%s&longitude=%s",
                 position.latitude, position.longitude);
+        return this;
     }
 
-    public String startTour(LatLng location, Tour tour) {
-        return String.format(BASE_URL + START_TOUR + "?userID=%s&tourdID=%s&currentLatitude=%s&currentLongitude=%s",
+    public UrlBuilder startTour(LatLng location, Tour tour) {
+        this.url = String.format(BASE_URL + START_TOUR + "?userID=%s&tourID=%s&currentLatitude=%s&currentLongitude=%s",
                 5, tour.getId(), location.latitude, location.longitude);
+        return this;
     }
 
-    public String poisOfTour(Tour tour) {
-        return BASE_URL + ROUTE_POIS + tour.getId();
+    public UrlBuilder poisOfTour(Tour tour) {
+        this.url = BASE_URL + ROUTE_POIS + tour.getId();
+        return this;
+    }
+
+    public String build() {
+        return url;
     }
 }

@@ -8,7 +8,6 @@ import com.google.android.gms.maps.model.LatLng;
 import group3.psit3.zhaw.ch.travelbuddy.app.AppController;
 import group3.psit3.zhaw.ch.travelbuddy.model.PhotoStatus;
 import group3.psit3.zhaw.ch.travelbuddy.model.Poi;
-import group3.psit3.zhaw.ch.travelbuddy.model.Route;
 import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 import org.json.JSONArray;
 
@@ -21,42 +20,43 @@ public class RequestQueuer {
         return AppController.getInstance().getRequestBuilder();
     }
 
-    public void queueCurrentRoute(String TAG, Location location, Consumer<Route> routeSetter) {
+    public void queueCurrentPoi(String TAG, Location location, Consumer<Poi> routeSetter) {
         JSONArray body = new SimpleJsonBuilder().setProperty("lat", location.getLatitude()).setProperty("long", location.getLongitude()).toJsonArray();
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, UrlBuilder.anUrl().currentRoute(),
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, UrlBuilder.anUrl().currentRoute().build(),
                 body,
-                response -> routeSetter.accept(Route.fromJson(response.toString())),
+                response -> routeSetter.accept(Poi.fromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
     public void queueTourList(String TAG, Consumer<List<Tour>> tourListSetter) {
-        JsonArrayRequest req = new JsonArrayRequest(UrlBuilder.anUrl().allTours(),
+        JsonArrayRequest req = new JsonArrayRequest(UrlBuilder.anUrl().allTours().build(),
                 response -> tourListSetter.accept(Tour.listFromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
     public void queuePoiList(String TAG, Tour tour, Consumer<List<Poi>> poiListSetter) {
-        JsonArrayRequest req = new JsonArrayRequest(UrlBuilder.anUrl().poisOfTour(tour),
+        JsonArrayRequest req = new JsonArrayRequest(UrlBuilder.anUrl().poisOfTour(tour).build(),
                 response -> poiListSetter.accept(Poi.listFromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
-    public void queueStartTour(String TAG, Tour tour, Location location, Consumer<Route> routeSetter) {
+    public void queueStartTour(String TAG, Tour tour, Location location, Consumer<Poi> routeSetter) {
         if (location == null) return;
         JSONArray reqBody = new JSONArray();
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, UrlBuilder.anUrl().startTour(new LatLng(location.getLatitude(), location.getLongitude()), tour),
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST,
+                UrlBuilder.anUrl().startTour(new LatLng(location.getLatitude(), location.getLongitude()), tour).build(),
                 reqBody,
-                response -> routeSetter.accept(Route.fromJson(response.toString())),
+                response -> routeSetter.accept(Poi.fromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
     public void queueIsPhotoValid(String TAG, Location location, Consumer<PhotoStatus> photoStatusSetter) {
         JSONArray body = new JSONArray();
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, UrlBuilder.anUrl().validatePhoto(new LatLng(location.getLatitude(), location.getLongitude())),
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, UrlBuilder.anUrl().validatePhoto(new LatLng(location.getLatitude(), location.getLongitude())).build(),
                 body,
                 response -> photoStatusSetter.accept(PhotoStatus.fromJson(response.toString())),
                 error -> Log.e(TAG, error.getMessage()));

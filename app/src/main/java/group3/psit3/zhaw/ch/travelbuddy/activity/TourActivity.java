@@ -36,7 +36,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     private static final String TAG = TourActivity.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
     private Map mMap;
-    private Route mRoute;
+    private Poi mPoi;
     private Progress mProgress;
     private Location mLocation;
 
@@ -97,12 +97,12 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     @Override
     public void onLocationChanged(Location location) {
         mMap.updatePosition(location);
-        RequestQueuer.aRequest().queueCurrentRoute(TAG, location, this::onReceiveCurrentRoute);
+        RequestQueuer.aRequest().queueCurrentPoi(TAG, location, this::onReceiveCurrentRoute);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        this.mMap = new Map(googleMap).drawRoute(mRoute);
+        this.mMap = new Map(googleMap).drawRoute(mPoi);
     }
 
     protected void startLocationUpdates(LocationRequest locationRequest) {
@@ -129,11 +129,11 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         return mLocationRequest;
     }
 
-    private void onReceiveCurrentRoute(Route route) {
-        this.mRoute = route;
-        mMap.drawRoute(route);
+    private void onReceiveCurrentRoute(Poi poi) {
+        this.mPoi = poi;
+        mMap.drawRoute(poi);
 
-        if (mRoute.isInPoiReach()) {
+        if (mPoi.isInReach()) {
             dispatchTakePictureIntent();
             RequestQueuer.aRequest().queueIsPhotoValid(TAG, mLocation, this::onReceivePhotoValidation);
         }

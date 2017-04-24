@@ -23,6 +23,7 @@ public class Poi implements Serializable {
     private double latitude;
     @SerializedName("Longitude")
     private double longitude;
+    private List<LatLng> route;
 
     public int getId() {
         return id;
@@ -60,4 +61,16 @@ public class Poi implements Serializable {
     }
 
 
+    public boolean isInReach() {
+        return false;
+    }
+
+    public Poi setRoute(List<LatLng> route) {
+        this.route = route;
+        return this;
+    }
+
+    public List<LatLng> getRoute() {
+        return route;
+    }
 }
