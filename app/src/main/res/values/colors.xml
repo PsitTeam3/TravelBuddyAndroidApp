@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#aeaeae</color>
-    <color name="colorPrimaryDark">#4A4A4A</color>
-    <color name="colorAccent">#7ED321</color>
+    <color name="material_color_light_green_500">#8BC34A</color>
+    <color name="material_color_light_green_100">#DCEDC8</color>
+    <color name="material_color_light_green_200">#C5E1A5</color>
+    <color name="material_color_light_green_700">#689F38</color>
 
-    <color name="list_divider">#d9d9d9</color>
-    <color name="list_row_start_color">#ffffff</color>
-    <color name="list_row_end_color">#ffffff</color>
-    <color name="list_row_hover_start_color">#ebeef0</color>
-    <color name="list_row_hover_end_color">#ebeef0</color>
+    <color name="material_color_light_blue_500">#03A9F4</color>
+
+    <color name="colorPrimary">@color/material_color_light_green_500</color>
+    <color name="colorPrimaryDark">@color/material_color_light_green_700</color>
+    <color name="colorAccent">@color/material_color_light_blue_500</color>
+    <color name="textColorPrimary">#ffffff</color>
+
+    <color name="list_divider">@color/material_grey_600</color>
+    <color name="list_row_start_color">@color/material_grey_800</color>
+    <color name="list_row_end_color">@color/material_grey_800</color>
+    <color name="list_row_hover_start_color">@color/material_grey_900</color>
+    <color name="list_row_hover_end_color">@color/material_grey_900</color>
 </resources>
