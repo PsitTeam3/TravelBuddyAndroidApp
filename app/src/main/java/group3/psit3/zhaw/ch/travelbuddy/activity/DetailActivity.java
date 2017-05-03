@@ -50,10 +50,8 @@ public class DetailActivity extends FragmentActivity implements OnMapReadyCallba
 
         setTitle(name);
 
-        TextView nameView = (TextView) findViewById(R.id.name);
         TextView detailDescriptionView = (TextView) findViewById(R.id.detailDescription);
 
-        nameView.setText(name);
         detailDescriptionView.setText(detailDescription);
 
         final Context context = this;
