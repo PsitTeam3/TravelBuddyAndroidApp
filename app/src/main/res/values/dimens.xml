@@ -3,5 +3,6 @@
     <dimen name="name">17sp</dimen>
     <dimen name="description">12sp</dimen>
     <dimen name="detailDescription">12sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 </resources>

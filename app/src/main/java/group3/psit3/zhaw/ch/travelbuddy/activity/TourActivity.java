@@ -174,4 +174,10 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     public void onConnectionSuspended(int i) {
         // TODO
     }
+
+    public void viewSummary(){
+        Intent intent = new Intent(this, SummaryActivity.class);
+        startActivity(intent);
+    }
+
 }

@@ -42,8 +42,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.DetailActivity"></activity>
-        <activity android:name=".activity.TourActivity"></activity>
+        <activity android:name=".activity.DetailActivity" />
+        <activity android:name=".activity.TourActivity" />
+        <activity
+            android:name=".activity.SummaryActivity"
+            android:label="@string/title_activity_summary"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
