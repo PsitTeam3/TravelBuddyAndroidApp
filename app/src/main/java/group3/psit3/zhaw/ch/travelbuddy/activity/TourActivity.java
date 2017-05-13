@@ -1,5 +1,6 @@
 package group3.psit3.zhaw.ch.travelbuddy.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.widget.Button;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -41,6 +44,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     private Poi mPoi;
     private Progress mProgress;
     private Location mLocation;
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,12 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
                 .findFragmentById(R.id.fragment);
         mapFragment.getMapAsync(this);
 
+        button = (Button) findViewById(R.id.btn_viewSummary);
+        button.setOnClickListener(arg0 -> {
+            viewSummary();
+        });
+
+
     }
 
     @Override
@@ -74,7 +84,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         startLocationUpdates(createLocationRequest());
 
         Tour tour = (Tour) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour");
-        //RequestQueuer.aRequest().queueStartTour(TAG, tour, mLocation, this::onReceiveCurrentPoi);
+        RequestQueuer.aRequest().queueStartTour(TAG, tour, mLocation, this::onReceiveCurrentPoi);
     }
 
     @Override
@@ -99,7 +109,9 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     @Override
     public void onLocationChanged(Location location) {
         mMap.updatePosition(location);
-        RequestQueuer.aRequest().queueCurrentRoute(TAG, location, this::onReceiveCurrentRoute);
+        RequestQueuer.aRequest().queueCurrentRoute(TAG, location, this::onReceiveCurrentRoute, this::onTourFinished);
+        RequestQueuer.aRequest().queueGetNextPoi(TAG, this::onReceiveCurrentPoi);
+
     }
 
     @Override
@@ -135,13 +147,18 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         mMap.drawRoute(route);
     }
 
+    private void onTourFinished(Object o){
+        viewSummary();
+    }
+
     private void onReceiveCurrentPoi(Poi poi) {
         this.mPoi = poi;
         mMap.drawRoute(poi.getRoute());
-
-        if (mPoi.isInReach()) {
+        //if (mPoi.isInReach()) {
+        if(true){
+            System.out.println("YOU SHOULD TAKE A PICTURE NOW!");
             dispatchTakePictureIntent();
-            RequestQueuer.aRequest().queueIsPhotoValid(TAG, mLocation, this::onReceivePhotoValidation);
+            //RequestQueuer.aRequest().queueIsPhotoValid(TAG, mLocation, this::onReceivePhotoValidation);
         }
     }
 
@@ -174,10 +191,12 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     public void onConnectionSuspended(int i) {
         // TODO
     }
-
     public void viewSummary(){
-        Intent intent = new Intent(this, SummaryActivity.class);
-        startActivity(intent);
+        SummaryActivity.gallery = mProgress.getImages();
+        Summary summary = new Summary(this.mProgress);
+        Intent summaryIntent = new Intent(this, SummaryActivity.class);
+        summaryIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Summary", summary);
+        startActivity(summaryIntent);
     }
 
 }

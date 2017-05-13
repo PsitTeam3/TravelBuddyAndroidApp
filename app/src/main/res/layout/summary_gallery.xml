@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/list_row_selector"
+    android:padding="8dp">
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/row1"
+        android:layout_marginLeft="16dp"
+        android:layout_alignParentLeft="true"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+    <ImageView
+        android:id="@+id/row2"
+        android:layout_toRightOf="@+id/row1"
+        android:layout_marginLeft="18dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+    <ImageView
+        android:id="@+id/row3"
+        android:layout_toRightOf="@+id/row2"
+        android:layout_marginLeft="18dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+
+</RelativeLayout>

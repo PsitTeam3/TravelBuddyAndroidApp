@@ -1,6 +1,7 @@
 package group3.psit3.zhaw.ch.travelbuddy.app;
 
 import android.app.Application;
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -18,12 +19,14 @@ public class AppController extends Application {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private RequestQueuer mRequestQueuer;
+    private static Context context;
 
     private static AppController mInstance;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        AppController.context = getApplicationContext();
         mInstance = this;
     }
 
@@ -64,5 +67,9 @@ public class AppController extends Application {
             mRequestQueuer = new RequestQueuer();
         }
         return mRequestQueuer;
+    }
+
+    public static Context getAppContext(){
+        return AppController.context;
     }
 }

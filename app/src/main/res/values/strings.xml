@@ -4,4 +4,7 @@
     <string name="start_tour">Start Tour</string>
     <string name="title_activity_summary_activity">Summary_activity</string>
     <string name="title_activity_summary">SummaryActivity</string>
+    <string name="summary_total_time">Total time</string>
+    <string name="summary_total_steps">Total steps</string>
+    <string name="summary_total_pictures">Total pictures taken</string>
 </resources>

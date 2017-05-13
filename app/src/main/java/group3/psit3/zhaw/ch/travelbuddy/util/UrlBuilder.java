@@ -10,7 +10,8 @@ public class UrlBuilder {
     private static final String TOURS = "/tours/gettours";
     private static final String START_TOUR = "/usertour/startusertour";
     private static final String VALIDATE_PHOTO = "/poi/isnextpoiinrange";
-    private static final String ROUTE_POIS = "/poi/getpoisbytour?id=";
+    private static final String ROUTE_POIS = "/poi/GetPOIsByTour?tourID=";
+    private static final String NEXT_POI = "/POI/GetNextPOI";
     private String url;
 
     public static UrlBuilder anUrl() {
@@ -42,6 +43,11 @@ public class UrlBuilder {
 
     public UrlBuilder poisOfTour(Tour tour) {
         this.url = BASE_URL + ROUTE_POIS + tour.getId();
+        return this;
+    }
+
+    public UrlBuilder nextPOI(){
+        this.url = String.format(BASE_URL + NEXT_POI + "?userID=%s",5);
         return this;
     }
 
