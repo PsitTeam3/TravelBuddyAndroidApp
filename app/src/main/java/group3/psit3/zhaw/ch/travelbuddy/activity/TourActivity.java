@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
@@ -52,7 +51,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mProgress = new Progress();
-        setContentView(R.layout.route);
+        setContentView(R.layout.activity_tour);
 
 
         if (mGoogleApiClient == null) {
@@ -66,11 +65,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment);
         mapFragment.getMapAsync(this);
-
-        Button button = (Button) findViewById(R.id.btn_viewSummary);
-        button.setOnClickListener(arg0 -> {
-            viewSummary();
-        });
     }
 
     @Override
@@ -98,7 +92,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mProgress.add(imageBitmap);
-            viewSummary();
         }
     }
 
@@ -120,7 +113,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         RequestQueuer.aRequest().queueIsPoiInReach(TAG, mLocation, this::onIsPoiInReach);
         RequestQueuer.aRequest().queueDistanceToNextPoi(TAG, mLocation, this::onDistanceToNextPoi);
         updateProgressView(mProgress);
-
     }
 
     private void updateProgressView(Progress progress) {
@@ -129,7 +121,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         timeSpent.setText("Time spent on route: " + progress.getTimeSpent());
-        distance.setText("Distance to next point: " + progress.getCurrentDistance());
+        distance.setText("Distance to next point: " + progress.getCurrentDistance() + "m");
         progressBar.setProgress(progress.getProgress(), true);
     }
 
@@ -138,7 +130,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         this.mMap = new Map(googleMap).drawRoute(mPoi);
     }
 
-    protected void startLocationUpdates(LocationRequest locationRequest) {
+    private void startLocationUpdates(LocationRequest locationRequest) {
         //noinspection MissingPermission
         FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, locationRequest, this);
@@ -154,7 +146,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         super.onStop();
     }
 
-    protected LocationRequest createLocationRequest() {
+    private LocationRequest createLocationRequest() {
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(500);
@@ -166,7 +158,8 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         mMap.drawRoute(route);
     }
 
-    private void onTourFinished(Object o) {
+    private void onTourFinished(Object error) {
+        RequestQueuer.aRequest().queueEndTour(TAG);
         viewSummary();
     }
 
@@ -177,7 +170,10 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
 
     private void onIsPoiInReach(Boolean isInReach) {
         if (isInReach) {
-            dispatchTakePictureIntent();
+            mProgress.finish();
+            if (mProgress.canTakePhoto()) {
+                dispatchTakePictureIntent();
+            }
         }
     }
 
@@ -187,6 +183,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     }
 
     private void dispatchTakePictureIntent() {
+        RequestQueuer.aRequest().queueSetCurrentPoiVisited(TAG);
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -203,7 +200,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         // TODO
     }
 
-    public void viewSummary() {
+    private void viewSummary() {
         Intent summaryIntent = new Intent(this, SummaryActivity.class);
         summaryIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Progress", mProgress);
         startActivity(summaryIntent);

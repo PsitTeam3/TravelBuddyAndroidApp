@@ -26,18 +26,12 @@ public class RequestQueuer {
         return AppController.getInstance().getRequestBuilder();
     }
 
-    public void queueCurrentRoute(String TAG, Location location, Consumer<List<LatLng>> poiSetter, Consumer tourFinished) {
+    public void queueCurrentRoute(String TAG, Location location, Consumer<List<LatLng>> poiSetter, Consumer tourFinisher) {
         String url = UrlBuilder.anUrl().currentRoute(new LatLng(location.getLatitude(), location.getLongitude())).build();
         Log.i(TAG, "Sending request to: " + url);
-        JsonArrayRequest req = new JsonArrayRequest(url,
-                response -> {
-                    if (response.toString() == "Tour doesn't have remaining POIs") {
-                        tourFinished.accept(null);
-                    } else {
-                        poiSetter.accept(RouteResponse.listFromJson(response.toString()));
-                    }
-                },
-                error -> onError(TAG, error, url));
+        StringRequest req = new StringRequest(url,
+                response -> poiSetter.accept(RouteResponse.listFromJson(response)),
+                error -> tourFinisher.accept(null));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
@@ -96,6 +90,30 @@ public class RequestQueuer {
                 url,
                 reqBody,
                 response -> routeSetter.accept(PoiResponse.fromJson(response.toString())),
+                error -> onError(TAG, error, url));
+        AppController.getInstance().addToRequestQueue(req, TAG);
+    }
+
+
+    public void queueEndTour(String TAG) {
+        String url = UrlBuilder.anUrl().endTour().build();
+        Log.i(TAG, "Sending request to: " + url);
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST,
+                url,
+                null,
+                null,
+                error -> onError(TAG, error, url));
+        AppController.getInstance().addToRequestQueue(req, TAG);
+    }
+
+    public void queueSetCurrentPoiVisited(String TAG) {
+        String url = UrlBuilder.anUrl().setCurrentPoiVisited().build();
+        Log.i(TAG, "Sending request to: " + url);
+        JSONArray reqBody = new JSONArray();
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST,
+                url,
+                reqBody,
+                null,
                 error -> onError(TAG, error, url));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }

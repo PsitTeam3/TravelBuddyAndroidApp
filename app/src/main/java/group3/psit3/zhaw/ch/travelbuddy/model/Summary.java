@@ -6,56 +6,17 @@ import java.util.Date;
 import java.util.List;
 
 public class Summary {
-    private double AVERAGE_STEP_DISTANCE = 0.65;
-    private int totalSteps;
-    private double totalDistance;
-    private int time;
-    private Date startTime;
-    private String totalTime;
-    private int picturesTaken;
-    public transient List<Bitmap> images;
+    private final Progress progress;
 
-
-    public Summary(Progress progress){
-        this.startTime = progress.getStartTime();
-        this.totalDistance = calculateDistance(this.totalSteps);
-    }
-
-    public int getTotalSteps(){
-        return totalSteps;
-    }
-
-    public double getTotalDistance() {
-        return totalDistance;
+    public Summary(Progress progress) {
+        this.progress = progress;
     }
 
     public Date getStartTime() {
-        return startTime;
+        return progress.getStartTime();
     }
 
-    public int getTime() {
-        return time;
+    public List<Bitmap> getImages() {
+        return progress.getBitmaps();
     }
-
-    public Bitmap getPic(int id){
-        return Bitmap.createScaledBitmap(images.get(id), 256, 256, false);
-    }
-
-    public int getPicturesTaken(){
-        return images.size();
-    }
-
-    public void setImages(List<Bitmap> images){
-        this.images = images;
-    }
-    public String totalTime(){
-        return this.totalTime;
-    }
-
-    private double calculateDistance(int steps) {
-        return steps * AVERAGE_STEP_DISTANCE;
-    }
-
-
-
 }

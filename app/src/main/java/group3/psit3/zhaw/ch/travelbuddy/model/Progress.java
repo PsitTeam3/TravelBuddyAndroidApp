@@ -11,28 +11,35 @@ import java.util.stream.Collectors;
 public class Progress implements Serializable {
 
     private static final long serialVersionUID = 7526471155622776147L;
+    public static final int PHOTO_TAKE_THRESHOLD = 10000;
 
     private Double currentDistance;
     private Double startDistance;
 
     private List<SerializableBitmap> images;
     private Date startTime;
+    private Date lastTimePhotoTaken;
 
     public Progress() {
         this.startDistance = null;
         this.currentDistance = null;
         this.images = new ArrayList<>();
         this.startTime = new Date();
+        this.lastTimePhotoTaken = new Date();
     }
 
     public void add(Bitmap imageBitmap) {
+        this.lastTimePhotoTaken = new Date();
         images.add(new SerializableBitmap(imageBitmap));
+    }
+
+    public boolean canTakePhoto() {
+        return new Date().getTime() - lastTimePhotoTaken.getTime() > PHOTO_TAKE_THRESHOLD;
     }
 
     public Date getStartTime() {
         return this.startTime;
     }
-
 
     public String formatTime(Date startTime, Date endTime) {
 
@@ -74,11 +81,16 @@ public class Progress implements Serializable {
     public int getProgress() {
         return currentDistance == null
                 || startDistance == null
-                ? 0 : currentDistance == 0
+                ? 0 : currentDistance == 0.0
                     ? 100 : (int) (100 * (startDistance/currentDistance));
     }
 
     public List<Bitmap> getBitmaps() {
         return images.stream().map(SerializableBitmap::getImage).collect(Collectors.toList());
+    }
+
+    public void finish() {
+        this.currentDistance = 0.0;
+        this.startDistance = 0.0;
     }
 }

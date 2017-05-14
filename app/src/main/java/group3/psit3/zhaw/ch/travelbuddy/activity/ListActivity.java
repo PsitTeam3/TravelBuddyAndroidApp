@@ -27,6 +27,7 @@ public class ListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        RequestQueuer.aRequest().queueEndTour(TAG);
 
         ListView listView = (ListView) findViewById(R.id.list);
         mAdapter = new CustomListAdapter(this);

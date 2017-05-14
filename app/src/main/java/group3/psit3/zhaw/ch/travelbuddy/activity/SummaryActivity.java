@@ -1,22 +1,15 @@
 package group3.psit3.zhaw.ch.travelbuddy.activity;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import group3.psit3.zhaw.ch.travelbuddy.R;
 import group3.psit3.zhaw.ch.travelbuddy.model.Progress;
 import group3.psit3.zhaw.ch.travelbuddy.model.Summary;
 
-import java.util.List;
-
 public class SummaryActivity extends Activity {
-
-    public static List<Bitmap> gallery = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,62 +19,17 @@ public class SummaryActivity extends Activity {
         Progress progress = (Progress) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Progress");
         Summary summary = new Summary(progress);
 
+        LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutChild);
 
-/*        TextView total_time = (TextView) findViewById(R.id.total_time);
-        total_time.setText(summary.totalTime());
+        for (Bitmap cur : summary.getImages()) {
 
-        TextView total_steps = (TextView) findViewById(R.id.total_steps);
-        total_steps.setText(String.valueOf(summary.getTotalSteps()));
+            ImageView image = new ImageView(this);
+            image.setLayoutParams(new android.view.ViewGroup.LayoutParams(80, 60));
+            image.setMaxHeight(200);
+            image.setMaxWidth(200);
+            image.setImageBitmap(cur);
 
-        TextView total_pictures = (TextView) findViewById(R.id.total_pictures);
-        total_pictures.setText(String.valueOf(summary.getPicturesTaken()));*/
-
-        ImageView image1  = (ImageView) findViewById(R.id.image_1);
-        image1.setImageBitmap(progress.getBitmaps().get(0));
-
-    }
-
-
-
-
-
-    private void checkPermissions(){
-
-        if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED||ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-        {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    },
-                    1052);
-
-        }
-
-    }
-
-    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
-
-        switch (requestCode) {
-            case 1052: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted.
-
-                } else {
-
-
-                    // Permission denied - Show a message to inform the user that this app only works
-                    // with these permissions granted
-
-                }
-                return;
-            }
-
+            layout.addView(image);
         }
     }
 
