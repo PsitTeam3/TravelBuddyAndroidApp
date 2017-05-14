@@ -23,7 +23,6 @@ public class ListActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //android.os.Debug.waitForDebugger();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
@@ -37,10 +36,6 @@ public class ListActivity extends Activity {
         pDialog.setMessage("Loading tours...");
         pDialog.show();
 
-        // changing action bar color
-        // getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1b1b1b")));
-
-        // Creating volley request obj && Adding request to request queue
         RequestQueuer.aRequest().queueTourList(TAG, this::setTourList);
 
         final Context context = this;
@@ -68,8 +63,6 @@ public class ListActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 

@@ -19,4 +19,16 @@ public class Summary {
     public List<Bitmap> getImages() {
         return progress.getBitmaps();
     }
+
+    public String getTotalTimeSpent() {
+        return progress.getTimeSpent();
+    }
+
+    public String getTourName() {
+        return progress.getTour().getName();
+    }
+
+    public String getTourDescription() {
+        return progress.getTour().getDescription();
+    }
 }

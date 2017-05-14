@@ -2,6 +2,7 @@ package group3.psit3.zhaw.ch.travelbuddy.model;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -23,8 +24,11 @@ public class TourOverview {
         if (mMap != null) {
             markerOptions.forEach(mMap::addMarker);
         }
-        if (pois.size() > 0) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pois.get(0).getLatLng(), 17.0f));
+        if (!pois.isEmpty()) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            pois.forEach(cur -> builder.include(cur.getLatLng()));
+            LatLngBounds bounds = builder.build();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 180));
         }
         return this;
     }

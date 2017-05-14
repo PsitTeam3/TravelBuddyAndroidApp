@@ -60,11 +60,4 @@
             android:max="100"
             android:progress="42"/>
 
-    <Button
-        android:id="@+id/btn_viewSummary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="View Summary" />
-
 </LinearLayout>

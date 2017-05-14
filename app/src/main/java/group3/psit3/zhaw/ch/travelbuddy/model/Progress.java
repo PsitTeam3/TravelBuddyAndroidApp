@@ -19,6 +19,7 @@ public class Progress implements Serializable {
     private List<SerializableBitmap> images;
     private Date startTime;
     private Date lastTimePhotoTaken;
+    private Tour tour;
 
     public Progress() {
         this.startDistance = null;
@@ -70,6 +71,10 @@ public class Progress implements Serializable {
         this.currentDistance = distance;
     }
 
+    public void setStartDistance(Double distance) {
+        this.startDistance = distance;
+    }
+
     public String getTimeSpent() {
         return formatTime(startTime, new Date());
     }
@@ -81,16 +86,19 @@ public class Progress implements Serializable {
     public int getProgress() {
         return currentDistance == null
                 || startDistance == null
-                ? 0 : currentDistance == 0.0
-                    ? 100 : (int) (100 * (startDistance/currentDistance));
+                ? 0 : startDistance == 0.0
+                    ? 100 : (int) (100 * ((startDistance - currentDistance)/startDistance));
     }
 
     public List<Bitmap> getBitmaps() {
         return images.stream().map(SerializableBitmap::getImage).collect(Collectors.toList());
     }
 
-    public void finish() {
-        this.currentDistance = 0.0;
-        this.startDistance = 0.0;
+    public void setTour(Tour tour) {
+        this.tour = tour;
+    }
+
+    public Tour getTour() {
+        return tour;
     }
 }

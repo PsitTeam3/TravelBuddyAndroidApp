@@ -10,18 +10,50 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Pictures taken"
-            android:id="@+id/timeSpent"
+            android:text="Tour summary: Zürich Church Tour"
+            android:id="@+id/tourName"
             android:layout_weight="0.26"
             style="@android:style/TextAppearance.DeviceDefault.Large"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"/>
 
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="This is a tour through the old town of Zurich"
+            android:id="@+id/tourDescription"
+            android:layout_weight="0.26"
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"/>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:id="@+id/linearLayoutChild"
             android:layout_height="match_parent"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="horizontal">
+    </LinearLayout>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Time spent:  "
+            android:id="@+id/totalTimeSpent"
+            android:layout_weight="0.26"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"/>
+
+    <Button
+            android:id="@+id/tourOverviewButton"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose new tour"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp" />
 
 </LinearLayout>
