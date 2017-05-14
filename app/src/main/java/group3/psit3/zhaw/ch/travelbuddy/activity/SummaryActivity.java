@@ -1,24 +1,21 @@
 package group3.psit3.zhaw.ch.travelbuddy.activity;
 
 import android.Manifest;
-import android.content.Intent;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import group3.psit3.zhaw.ch.travelbuddy.R;
+import group3.psit3.zhaw.ch.travelbuddy.model.Progress;
 import group3.psit3.zhaw.ch.travelbuddy.model.Summary;
 
 import java.util.List;
 
-public class SummaryActivity extends AppCompatActivity {
+public class SummaryActivity extends Activity {
 
-    private Button button;
     public static List<Bitmap> gallery = null;
 
     @Override
@@ -26,43 +23,21 @@ public class SummaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
 
-        Intent i = getIntent();
-        Summary summary = (Summary)i.getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Summary");
-        summary.setImages(this.gallery);
+        Progress progress = (Progress) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Progress");
+        Summary summary = new Summary(progress);
 
 
-
-/*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermissions();
-        }
-
-        //Fill images with test values
-        String absPath = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)).getAbsolutePath();
-        summary.images.add(BitmapFactory.decodeFile(absPath + "/pic1.bmp"));
-        summary.images.add(BitmapFactory.decodeFile(absPath + "/pic2.bmp"));
-        summary.images.add(BitmapFactory.decodeFile(absPath + "/pic3.bmp"));
-
-        //
-
-*/
-
-
-
-        TextView total_time = (TextView) findViewById(R.id.total_time);
+/*        TextView total_time = (TextView) findViewById(R.id.total_time);
         total_time.setText(summary.totalTime());
 
         TextView total_steps = (TextView) findViewById(R.id.total_steps);
         total_steps.setText(String.valueOf(summary.getTotalSteps()));
 
         TextView total_pictures = (TextView) findViewById(R.id.total_pictures);
-        total_pictures.setText(String.valueOf(summary.getPicturesTaken()));
+        total_pictures.setText(String.valueOf(summary.getPicturesTaken()));*/
 
         ImageView image1  = (ImageView) findViewById(R.id.image_1);
-        image1.setImageBitmap(summary.getPic(0));
-
-
-
+        image1.setImageBitmap(progress.getBitmaps().get(0));
 
     }
 

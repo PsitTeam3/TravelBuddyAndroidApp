@@ -32,7 +32,7 @@ public class PoiResponse implements Serializable {
         return poi;
     }
 
-    public List<LatLng> getRoute() {
+    private List<LatLng> getRoute() {
         return route.stream().map(cur -> new LatLng(cur.getLat(), cur.getLong())).collect(Collectors.toList());
     }
 }

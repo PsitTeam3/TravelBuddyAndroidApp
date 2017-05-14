@@ -12,6 +12,7 @@ public class UrlBuilder {
     private static final String ROUTE_POIS = "/poi/GetPOIsByTour?tourID=";
     private static final String NEXT_POI = "/POI/GetNextPOI";
     private static final String NEXT_POI_IN_RANGE = "/POI/IsNextPOIInRange";
+    private static final String DISTANCE_TO_NEXT_POI = "/POI/GetDistanceToNextPOI";
     private String url;
 
     public static UrlBuilder anUrl() {
@@ -53,5 +54,11 @@ public class UrlBuilder {
 
     public String build() {
         return url;
+    }
+
+    public UrlBuilder distanceToNextPoi(LatLng location) {
+        this.url = String.format(BASE_URL + DISTANCE_TO_NEXT_POI + "?userID=%s&latitude=%s&longitude=%s",
+                5, location.latitude, location.longitude);
+        return this;
     }
 }

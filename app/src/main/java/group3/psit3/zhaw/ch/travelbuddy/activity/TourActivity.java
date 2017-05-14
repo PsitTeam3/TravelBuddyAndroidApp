@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -23,7 +25,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import group3.psit3.zhaw.ch.travelbuddy.R;
-import group3.psit3.zhaw.ch.travelbuddy.model.*;
+import group3.psit3.zhaw.ch.travelbuddy.model.Map;
+import group3.psit3.zhaw.ch.travelbuddy.model.Poi;
+import group3.psit3.zhaw.ch.travelbuddy.model.Progress;
+import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
 import java.util.Arrays;
@@ -42,7 +47,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     private Poi mPoi;
     private Progress mProgress;
     private Location mLocation;
-    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +67,10 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
                 .findFragmentById(R.id.fragment);
         mapFragment.getMapAsync(this);
 
-        button = (Button) findViewById(R.id.btn_viewSummary);
+        Button button = (Button) findViewById(R.id.btn_viewSummary);
         button.setOnClickListener(arg0 -> {
             viewSummary();
         });
-
-
     }
 
     @Override
@@ -83,7 +85,11 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
 
         Tour tour = (Tour) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour");
         RequestQueuer.aRequest().queueStartTour(TAG, tour, mLocation, this::onReceiveCurrentPoi);
-        RequestQueuer.aRequest().queueIsPoiInReach(TAG, mLocation, this::onIsPoiInReach);
+        RequestQueuer.aRequest().queueDistanceToNextPoi(TAG, mLocation, this::onDistanceToNextPoi);
+    }
+
+    private void onDistanceToNextPoi(Double distance) {
+        mProgress.updateDistance(distance);
     }
 
     @Override
@@ -92,8 +98,8 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mProgress.add(imageBitmap);
+            viewSummary();
         }
-
     }
 
     @Override
@@ -112,6 +118,19 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         RequestQueuer.aRequest().queueCurrentRoute(TAG, location, this::onReceiveCurrentRoute, this::onTourFinished);
         RequestQueuer.aRequest().queueGetNextPoi(TAG, this::onReceiveCurrentPoi);
         RequestQueuer.aRequest().queueIsPoiInReach(TAG, mLocation, this::onIsPoiInReach);
+        RequestQueuer.aRequest().queueDistanceToNextPoi(TAG, mLocation, this::onDistanceToNextPoi);
+        updateProgressView(mProgress);
+
+    }
+
+    private void updateProgressView(Progress progress) {
+        TextView timeSpent = (TextView) findViewById(R.id.timeSpent);
+        TextView distance = (TextView) findViewById(R.id.currentDistance);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        timeSpent.setText("Time spent on route: " + progress.getTimeSpent());
+        distance.setText("Distance to next point: " + progress.getCurrentDistance());
+        progressBar.setProgress(progress.getProgress(), true);
     }
 
     @Override
@@ -147,7 +166,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         mMap.drawRoute(route);
     }
 
-    private void onTourFinished(Object o){
+    private void onTourFinished(Object o) {
         viewSummary();
     }
 
@@ -158,14 +177,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
 
     private void onIsPoiInReach(Boolean isInReach) {
         if (isInReach) {
-            dispatchTakePictureIntent();
-        }
-    }
-
-    private void onReceivePhotoValidation(PhotoStatus status) {
-        if (status.equals(PhotoStatus.OK)) {
-            // TODO show some dialog to confirm photo
-        } else {
             dispatchTakePictureIntent();
         }
     }
@@ -191,11 +202,10 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     public void onConnectionSuspended(int i) {
         // TODO
     }
-    public void viewSummary(){
-        SummaryActivity.gallery = mProgress.getImages();
-        Summary summary = new Summary(this.mProgress);
+
+    public void viewSummary() {
         Intent summaryIntent = new Intent(this, SummaryActivity.class);
-        summaryIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Summary", summary);
+        summaryIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Progress", mProgress);
         startActivity(summaryIntent);
     }
 

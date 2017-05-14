@@ -78,6 +78,15 @@ public class RequestQueuer {
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
+    public void queueDistanceToNextPoi(String TAG, Location location, Consumer<Double> distanceToNextPoiListener) {
+        String url = UrlBuilder.anUrl().distanceToNextPoi(new LatLng(location.getLatitude(), location.getLongitude())).build();
+        Log.i(TAG, "Sending request to: " + url);
+        StringRequest req = new StringRequest(url,
+                response -> distanceToNextPoiListener.accept(Double.valueOf(response)),
+                error -> onError(TAG, error, url));
+        AppController.getInstance().addToRequestQueue(req, TAG);
+    }
+
     public void queueStartTour(String TAG, Tour tour, Location location, Consumer<Poi> routeSetter) {
         String url = UrlBuilder.anUrl().startTour(new LatLng(location.getLatitude(), location.getLongitude()), tour).build();
         Log.i(TAG, "Sending request to: " + url);

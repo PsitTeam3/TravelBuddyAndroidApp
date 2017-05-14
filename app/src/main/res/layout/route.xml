@@ -20,12 +20,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Time spent: 24m 12s"
-            android:id="@+id/textView"
+            android:text="Distance to next Point: 300m"
+            android:id="@+id/currentDistance"
             android:layout_weight="0.26"
             style="@android:style/TextAppearance.DeviceDefault.Large"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Time spent on route: 30min"
+            android:id="@+id/timeSpent"
+            android:layout_weight="0.26"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Progress on route:"
+            android:id="@+id/progress"
+            android:layout_weight="0.26"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="40dp"/>
 
     <ProgressBar
             style="?android:attr/progressBarStyleHorizontal"

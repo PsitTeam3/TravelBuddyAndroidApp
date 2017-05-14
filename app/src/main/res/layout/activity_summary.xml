@@ -16,8 +16,7 @@
             android:layout_marginTop="15dp"
             android:layout_width="352dp"
             android:layout_height="wrap_content"
-            tools:layout_editor_absoluteY="0dp"
-            tools:layout_editor_absoluteX="8dp">
+                >
 
                 <TableRow
                     android:layout_width="match_parent"
