@@ -52,14 +52,15 @@ public class Poi implements Serializable {
         return gson.fromJson(response, collectionType);
     }
 
+    public static Poi fromJson(String response) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(response, Poi.class);
+    }
+
     public LatLng getLatLng() {
         return new LatLng(latitude, longitude);
     }
 
-
-    public boolean isInReach() {
-        return false;
-    }
 
     public Poi setRoute(List<LatLng> route) {
         this.route = route;

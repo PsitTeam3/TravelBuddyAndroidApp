@@ -2,17 +2,11 @@ package group3.psit3.zhaw.ch.travelbuddy.model;
 
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-/**
- * Created by Raffaele on 02.05.2017.
- */
 
 public class Summary implements Serializable{
     private double AVERAGE_STEP_DISTANCE = 0.65;

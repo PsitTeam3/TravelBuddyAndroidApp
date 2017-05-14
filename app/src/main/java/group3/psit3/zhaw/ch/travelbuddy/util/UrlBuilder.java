@@ -9,9 +9,9 @@ public class UrlBuilder {
     private static final String CURRENT_POI = "/POI/GetRouteToNextPOI";
     private static final String TOURS = "/tours/gettours";
     private static final String START_TOUR = "/usertour/startusertour";
-    private static final String VALIDATE_PHOTO = "/poi/isnextpoiinrange";
     private static final String ROUTE_POIS = "/poi/GetPOIsByTour?tourID=";
     private static final String NEXT_POI = "/POI/GetNextPOI";
+    private static final String NEXT_POI_IN_RANGE = "/POI/IsNextPOIInRange";
     private String url;
 
     public static UrlBuilder anUrl() {
@@ -29,12 +29,6 @@ public class UrlBuilder {
         return this;
     }
 
-    public UrlBuilder validatePhoto(LatLng position) {
-        this.url = String.format(UrlBuilder.BASE_URL + VALIDATE_PHOTO + "?latitude=%s&longitude=%s",
-                position.latitude, position.longitude);
-        return this;
-    }
-
     public UrlBuilder startTour(LatLng location, Tour tour) {
         this.url = String.format(BASE_URL + START_TOUR + "?userID=%s&tourID=%s&currentLatitude=%s&currentLongitude=%s",
                 5, tour.getId(), location.latitude, location.longitude);
@@ -48,6 +42,12 @@ public class UrlBuilder {
 
     public UrlBuilder nextPOI(){
         this.url = String.format(BASE_URL + NEXT_POI + "?userID=%s",5);
+        return this;
+    }
+
+    public UrlBuilder poiInReach(LatLng location) {
+        this.url = String.format(BASE_URL + NEXT_POI_IN_RANGE + "?userID=%s&latitude=%s&longitude=%s&allowedDistance=50",
+                5, location.latitude, location.longitude);
         return this;
     }
 

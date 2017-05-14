@@ -1,15 +1,19 @@
 package group3.psit3.zhaw.ch.travelbuddy.util;
 
 
-
 import android.location.Location;
 import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.maps.model.LatLng;
 import group3.psit3.zhaw.ch.travelbuddy.app.AppController;
-import group3.psit3.zhaw.ch.travelbuddy.model.*;
+import group3.psit3.zhaw.ch.travelbuddy.model.Poi;
+import group3.psit3.zhaw.ch.travelbuddy.model.PoiResponse;
+import group3.psit3.zhaw.ch.travelbuddy.model.RouteResponse;
+import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 import org.json.JSONArray;
 
 import java.util.List;
@@ -27,9 +31,9 @@ public class RequestQueuer {
         Log.i(TAG, "Sending request to: " + url);
         JsonArrayRequest req = new JsonArrayRequest(url,
                 response -> {
-                    if(response.toString()=="Tour doesn't have remaining POIs"){
+                    if (response.toString() == "Tour doesn't have remaining POIs") {
                         tourFinished.accept(null);
-                    }else {
+                    } else {
                         poiSetter.accept(RouteResponse.listFromJson(response.toString()));
                     }
                 },
@@ -37,11 +41,12 @@ public class RequestQueuer {
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
-    public void queueGetNextPoi(String TAG, Consumer<Poi> nextPoi){
+    public void queueGetNextPoi(String TAG, Consumer<Poi> nextPoi) {
         String url = UrlBuilder.anUrl().nextPOI().build();
         Log.i(TAG, "Sending request to: " + url);
-        JsonArrayRequest req = new JsonArrayRequest(url,
-                response -> nextPoi.accept(PoiResponse.fromJson(response.toString())),
+        JsonObjectRequest req = new JsonObjectRequest(url,
+                null,
+                response -> nextPoi.accept(Poi.fromJson(response.toString())),
                 error -> onError(TAG, error, url));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
@@ -64,6 +69,15 @@ public class RequestQueuer {
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
+    public void queueIsPoiInReach(String TAG, Location location, Consumer<Boolean> poiInReachListener) {
+        String url = UrlBuilder.anUrl().poiInReach(new LatLng(location.getLatitude(), location.getLongitude())).build();
+        Log.i(TAG, "Sending request to: " + url);
+        StringRequest req = new StringRequest(url,
+                response -> poiInReachListener.accept(Boolean.valueOf(response)),
+                error -> onError(TAG, error, url));
+        AppController.getInstance().addToRequestQueue(req, TAG);
+    }
+
     public void queueStartTour(String TAG, Tour tour, Location location, Consumer<Poi> routeSetter) {
         String url = UrlBuilder.anUrl().startTour(new LatLng(location.getLatitude(), location.getLongitude()), tour).build();
         Log.i(TAG, "Sending request to: " + url);
@@ -77,23 +91,12 @@ public class RequestQueuer {
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 
-    public void queueIsPhotoValid(String TAG, Location location, Consumer<PhotoStatus> photoStatusSetter) {
-        String url =UrlBuilder.anUrl().validatePhoto(new LatLng(location.getLatitude(), location.getLongitude())).build();
-        Log.i(TAG, "Sending request to: " + url);
-        JSONArray body = new JSONArray();
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.POST, url,
-                body,
-                response -> photoStatusSetter.accept(PhotoStatus.fromJson(response.toString())),
-                error -> onError(TAG, error, url));
-        AppController.getInstance().addToRequestQueue(req, TAG);
-    }
-
-    private void onError(String TAG, VolleyError error, String url){
-        if(error.getMessage() == "") {
+    private void onError(String TAG, VolleyError error, String url) {
+        if ("".equals(error.getMessage())) {
             Log.e(TAG, error.getMessage());
-        }else if(error.networkResponse != null){
+        } else if (error.networkResponse != null) {
             Log.e(TAG, "Server error contains no message, Status: " + error.networkResponse.statusCode + ", URL: " + url);
-        }else{
+        } else {
             Log.e(TAG, "Server error contains no message, URL: " + url);
         }
         error.printStackTrace();
