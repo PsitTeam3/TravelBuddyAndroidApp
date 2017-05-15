@@ -26,12 +26,12 @@ public class RequestQueuer {
         return AppController.getInstance().getRequestBuilder();
     }
 
-    public void queueCurrentRoute(String TAG, Location location, Consumer<List<LatLng>> poiSetter, Consumer tourFinisher) {
+    public void queueCurrentRoute(String TAG, Location location, Consumer<RouteResponse> routeSetter) {
         String url = UrlBuilder.anUrl().currentRoute(new LatLng(location.getLatitude(), location.getLongitude())).build();
         Log.i(TAG, "Sending request to: " + url);
         StringRequest req = new StringRequest(url,
-                response -> poiSetter.accept(RouteResponse.listFromJson(response)),
-                error -> tourFinisher.accept(null));
+                response -> routeSetter.accept(RouteResponse.fromJson(response)),
+                error -> onError(TAG, error, url));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
 

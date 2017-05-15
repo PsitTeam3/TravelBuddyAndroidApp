@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class Poi implements Serializable {
     private double latitude;
     @SerializedName("Longitude")
     private double longitude;
-    private List<LatLng> route;
+    private List<LatLng> route = new ArrayList<>();
 
     public int getId() {
         return id;

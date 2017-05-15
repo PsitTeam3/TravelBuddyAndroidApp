@@ -23,7 +23,7 @@ public class Map {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void updatePosition(Location location) {
-        RequestQueuer.aRequest().queueCurrentRoute(TAG, location, this::drawRoute, null);
+        RequestQueuer.aRequest().queueCurrentRoute(TAG, location, cur -> drawRoute(cur.getRoute()));
         updateMarker(location);
     }
 

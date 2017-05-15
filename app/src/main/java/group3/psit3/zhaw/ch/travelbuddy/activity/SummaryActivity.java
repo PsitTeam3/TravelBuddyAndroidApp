@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,11 +32,6 @@ public class SummaryActivity extends Activity {
             image.setMaxHeight(400);
             image.setMaxWidth(600);
             image.setImageBitmap(cur);
-            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) image.getLayoutParams();
-            marginParams.setMargins(marginParams.leftMargin,
-                    marginParams.topMargin,
-                    20,
-                    marginParams.bottomMargin);
 
             layout.addView(image);
         }
