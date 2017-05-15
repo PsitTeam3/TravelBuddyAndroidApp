@@ -9,6 +9,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This is a model class and gets parsed from JSON.
+ */
 public class PoiResponse implements Serializable {
 
     @SerializedName("NextPOI")
@@ -22,6 +25,11 @@ public class PoiResponse implements Serializable {
         this.route = route;
     }
 
+    /**
+     * Extracts a POI from a nested JSON response.
+     * @param response Response as string.
+     * @return POI object
+     */
     public static Poi fromJson(String response) {
         Gson gson = new GsonBuilder().create();
         PoiResponse poiResponse = gson.fromJson(response, PoiResponse.class);
@@ -32,7 +40,7 @@ public class PoiResponse implements Serializable {
         return poi;
     }
 
-    public List<LatLng> getRoute() {
+    private List<LatLng> getRoute() {
         return route.stream().map(cur -> new LatLng(cur.getLat(), cur.getLong())).collect(Collectors.toList());
     }
 }

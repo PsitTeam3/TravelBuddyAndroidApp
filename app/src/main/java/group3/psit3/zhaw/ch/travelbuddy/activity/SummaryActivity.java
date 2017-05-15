@@ -1,129 +1,71 @@
 package group3.psit3.zhaw.ch.travelbuddy.activity;
 
-import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.io.File;
-import java.util.List;
-
 import group3.psit3.zhaw.ch.travelbuddy.R;
+import group3.psit3.zhaw.ch.travelbuddy.model.Progress;
 import group3.psit3.zhaw.ch.travelbuddy.model.Summary;
 
-public class SummaryActivity extends AppCompatActivity {
+/**
+ * The SummaryActivity shows the results of a finished tour.
+ */
+public class SummaryActivity extends Activity {
 
-    private Button button;
-    public static List<Bitmap> gallery = null;
+    private static final String TOTAL_TIME_SPENT = "Total time spent: ";
+    private static final String TOUR_SUMMARY = "Tour summary - ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
 
-        Intent i = getIntent();
-        Summary summary = (Summary)i.getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Summary");
-        summary.setImages(this.gallery);
+        Progress progress = (Progress) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Progress");
 
-
-
-/*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermissions();
-        }
-
-        //Fill images with test values
-        String absPath = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)).getAbsolutePath();
-        summary.images.add(BitmapFactory.decodeFile(absPath + "/pic1.bmp"));
-        summary.images.add(BitmapFactory.decodeFile(absPath + "/pic2.bmp"));
-        summary.images.add(BitmapFactory.decodeFile(absPath + "/pic3.bmp"));
-
-        //
-
-*/
-
-
-
-        TextView total_time = (TextView) findViewById(R.id.total_time);
-        total_time.setText(summary.totalTime());
-
-        TextView total_steps = (TextView) findViewById(R.id.total_steps);
-        total_steps.setText(String.valueOf(summary.getTotalSteps()));
-
-        TextView total_pictures = (TextView) findViewById(R.id.total_pictures);
-        total_pictures.setText(String.valueOf(summary.getPicturesTaken()));
-
-        ImageView image1  = (ImageView) findViewById(R.id.image_1);
-        image1.setImageBitmap(summary.getPic(0));
-
-
-
-
+        drawSummary(new Summary(progress));
     }
 
+    private void drawSummary(Summary summary) {
 
+        LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutChild);
 
+        for (Bitmap cur : summary.getImages()) {
 
+            ImageView image = new ImageView(this);
+            image.setLayoutParams(new android.view.ViewGroup.LayoutParams(400, 600));
+            image.setMaxHeight(400);
+            image.setMaxWidth(600);
+            image.setImageBitmap(cur);
 
-    private void checkPermissions(){
-
-        if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED||ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-        {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    },
-                    1052);
-
+            layout.addView(image);
         }
 
+        final Context context = this;
+        Button button = (Button) findViewById(R.id.tourOverviewButton);
+
+        button.setOnClickListener(arg0 -> {
+            Intent tourIntent = new Intent(context, ListActivity.class);
+            startActivity(tourIntent);
+        });
+
+        TextView totalTimeSpent = (TextView) findViewById(R.id.totalTimeSpent);
+        totalTimeSpent.setText(TOTAL_TIME_SPENT + summary.getTotalTimeSpent());
+
+        TextView tourName = (TextView) findViewById(R.id.tourName);
+        tourName.setText(TOUR_SUMMARY + summary.getTourName());
+
+        TextView tourDescription = (TextView) findViewById(R.id.tourDescription);
+        tourDescription.setText("\"" + summary.getTourDescription() + "\"");
     }
 
-    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
-
-        switch (requestCode) {
-            case 1052: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted.
-
-                } else {
-
-
-                    // Permission denied - Show a message to inform the user that this app only works
-                    // with these permissions granted
-
-                }
-                return;
-            }
-
-        }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
-
-
-
-
-
-
-
 }

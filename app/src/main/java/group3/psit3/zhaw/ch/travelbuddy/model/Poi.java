@@ -9,9 +9,13 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * This is a model class and gets parsed from JSON.
+ */
 public class Poi implements Serializable {
     @SerializedName("Id")
     private int id;
@@ -23,50 +27,60 @@ public class Poi implements Serializable {
     private double latitude;
     @SerializedName("Longitude")
     private double longitude;
-    private List<LatLng> route;
+    private List<LatLng> route = new ArrayList<>();
 
-    public int getId() {
-        return id;
+    /**
+     * Parses POI from JSON string.
+     * @param response Response as string
+     * @return Poi object
+     */
+    public static Poi fromJson(String response) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(response, Poi.class);
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public int getVisitDuration() {
-        return visitDuration;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-
+    /**
+     * Parses a list of POIs from JSON String.
+     * @param response Response as string
+     * @return List of POIs
+     */
     public static List<Poi> listFromJson(String response) {
         Gson gson = new GsonBuilder().create();
         Type collectionType = new TypeToken<Collection<Poi>>(){}.getType();
         return gson.fromJson(response, collectionType);
     }
 
-    public LatLng getLatLng() {
+    public int getId() {
+        return id;
+    }
+
+    String getDescription() {
+        return description;
+    }
+
+    int getVisitDuration() {
+        return visitDuration;
+    }
+
+    double getLatitude() {
+        return latitude;
+    }
+
+    double getLongitude() {
+        return longitude;
+    }
+
+    LatLng getLatLng() {
         return new LatLng(latitude, longitude);
     }
 
 
-    public boolean isInReach() {
-        return false;
-    }
-
-    public Poi setRoute(List<LatLng> route) {
+    Poi setRoute(List<LatLng> route) {
         this.route = route;
         return this;
     }
 
-    public List<LatLng> getRoute() {
+    List<LatLng> getRoute() {
         return route;
     }
 }

@@ -29,14 +29,6 @@ public class UrlBuilderTest {
     }
 
     @Test
-    public void validatePhoto() throws Exception {
-        LatLng target = new LatLng(42, 24);
-        assertThat(testObj.validatePhoto(target).build(), is(
-                String.format(BASE_URL + "/poi/isnextpoiinrange?latitude=%s&longitude=%s",
-                        target.latitude, target.longitude)));
-    }
-
-    @Test
     public void startTour() throws Exception {
         LatLng location = new LatLng(42, 24);
         Tour tour = new Tour().setId(3);
@@ -48,6 +40,6 @@ public class UrlBuilderTest {
     @Test
     public void poisOfTour() throws Exception {
         Tour tour = new Tour().setId(42);
-        assertThat(testObj.poisOfTour(tour).build(), is(BASE_URL + "/poi/getpoisbytour?id=" + 42));
+        assertThat(testObj.poisOfTour(tour).build(), is(BASE_URL + "/poi/GetPOIsByTour?tourID=" + 42));
     }
 }

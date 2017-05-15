@@ -13,33 +13,33 @@ import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
 import java.util.List;
-
+/**
+ * The ListActivity fetches all available tours in the current city
+ * and presents the as list.
+ */
 public class ListActivity extends Activity {
-    // Log tag
+
     private static final String TAG = ListActivity.class.getSimpleName();
+    private static final String LOADING_TOURS = "Loading tours...";
 
     private ProgressDialog pDialog;
     private CustomListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //android.os.Debug.waitForDebugger();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        RequestQueuer.aRequest().queueEndTour(TAG);
 
         ListView listView = (ListView) findViewById(R.id.list);
         mAdapter = new CustomListAdapter(this);
         listView.setAdapter(mAdapter);
 
         pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Loading tours...");
+        pDialog.setMessage(LOADING_TOURS);
         pDialog.show();
 
-        // changing action bar color
-        // getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1b1b1b")));
-
-        // Creating volley request obj && Adding request to request queue
         RequestQueuer.aRequest().queueTourList(TAG, this::setTourList);
 
         final Context context = this;
@@ -54,11 +54,6 @@ public class ListActivity extends Activity {
         });
     }
 
-    public void setTourList(List<Tour> tourList) {
-        hidePDialog();
-        mAdapter.setTours(tourList);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -67,9 +62,12 @@ public class ListActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    private void setTourList(List<Tour> tourList) {
+        hidePDialog();
+        mAdapter.setTours(tourList);
     }
 
     private void hidePDialog() {

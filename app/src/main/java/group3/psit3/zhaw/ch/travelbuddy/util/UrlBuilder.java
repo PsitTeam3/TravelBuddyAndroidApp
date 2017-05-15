@@ -3,51 +3,74 @@ package group3.psit3.zhaw.ch.travelbuddy.util;
 import com.google.android.gms.maps.model.LatLng;
 import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 
+/**
+ * UrlBuilder holds all URL fragments and constants and provides a
+ * simple and clean API to build URLs dynamically;
+ */
 public class UrlBuilder {
 
-    public static final String BASE_URL = "http://travelbuddy5.azurewebsites.net/api";
+    static final String BASE_URL = "http://travelbuddy5.azurewebsites.net/api";
     private static final String CURRENT_POI = "/POI/GetRouteToNextPOI";
     private static final String TOURS = "/tours/gettours";
     private static final String START_TOUR = "/usertour/startusertour";
-    private static final String VALIDATE_PHOTO = "/poi/isnextpoiinrange";
+    private static final String END_TOUR = "/usertour/endusertour";
     private static final String ROUTE_POIS = "/poi/GetPOIsByTour?tourID=";
     private static final String NEXT_POI = "/POI/GetNextPOI";
+    private static final String NEXT_POI_IN_RANGE = "/POI/IsNextPOIInRange";
+    private static final String SET_POI_VISITED = "/POI/SetNextPOIAsVisited";
+    private static final String DISTANCE_TO_NEXT_POI = "/POI/GetDistanceToNextPOI";
     private String url;
 
-    public static UrlBuilder anUrl() {
+    static UrlBuilder anUrl() {
         return new UrlBuilder();
     }
 
-    public UrlBuilder currentRoute(LatLng location) {
+    UrlBuilder currentRoute(LatLng location) {
         this.url = String.format(BASE_URL + CURRENT_POI + "?userID=%s&currentLatitude=%s&currentLongitude=%s",
                 5, location.latitude, location.longitude);
         return this;
     }
 
-    public UrlBuilder allTours() {
+    UrlBuilder allTours() {
         this.url = BASE_URL + TOURS;
         return this;
     }
 
-    public UrlBuilder validatePhoto(LatLng position) {
-        this.url = String.format(UrlBuilder.BASE_URL + VALIDATE_PHOTO + "?latitude=%s&longitude=%s",
-                position.latitude, position.longitude);
-        return this;
-    }
-
-    public UrlBuilder startTour(LatLng location, Tour tour) {
+    UrlBuilder startTour(LatLng location, Tour tour) {
         this.url = String.format(BASE_URL + START_TOUR + "?userID=%s&tourID=%s&currentLatitude=%s&currentLongitude=%s",
                 5, tour.getId(), location.latitude, location.longitude);
         return this;
     }
 
-    public UrlBuilder poisOfTour(Tour tour) {
+    UrlBuilder poisOfTour(Tour tour) {
         this.url = BASE_URL + ROUTE_POIS + tour.getId();
         return this;
     }
 
-    public UrlBuilder nextPOI(){
-        this.url = String.format(BASE_URL + NEXT_POI + "?userID=%s",5);
+    UrlBuilder nextPOI() {
+        this.url = String.format(BASE_URL + NEXT_POI + "?userID=%s", 5);
+        return this;
+    }
+
+    UrlBuilder poiInReach(LatLng location) {
+        this.url = String.format(BASE_URL + NEXT_POI_IN_RANGE + "?userID=%s&latitude=%s&longitude=%s&allowedDistance=50",
+                5, location.latitude, location.longitude);
+        return this;
+    }
+
+    UrlBuilder distanceToNextPoi(LatLng location) {
+        this.url = String.format(BASE_URL + DISTANCE_TO_NEXT_POI + "?userID=%s&latitude=%s&longitude=%s",
+                5, location.latitude, location.longitude);
+        return this;
+    }
+
+    UrlBuilder setCurrentPoiVisited() {
+        this.url = String.format(BASE_URL + SET_POI_VISITED + "?userID=%s", 5);
+        return this;
+    }
+
+    UrlBuilder endTour() {
+        this.url = String.format(BASE_URL + END_TOUR + "?userID=%s", 5);
         return this;
     }
 

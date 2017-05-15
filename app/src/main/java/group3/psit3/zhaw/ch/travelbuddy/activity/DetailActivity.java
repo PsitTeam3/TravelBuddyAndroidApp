@@ -18,12 +18,15 @@ import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
 import java.util.List;
 
+/**
+ * The DetailActivity shows a detailed preview of a tour. It shows all POIs
+ * on a map with a short description.
+ */
 public class DetailActivity extends FragmentActivity implements OnMapReadyCallback {
-    // Log tag
+
     private static final String TAG = DetailActivity.class.getSimpleName();
 
     private ProgressDialog pDialog;
-    private Button button;
     private TourOverview mTourOverview;
 
     @Override
@@ -55,17 +58,12 @@ public class DetailActivity extends FragmentActivity implements OnMapReadyCallba
         detailDescriptionView.setText(detailDescription);
 
         final Context context = this;
-        button = (Button) findViewById(R.id.startTourButton);
+        Button button = (Button) findViewById(R.id.startTourButton);
         button.setOnClickListener(arg0 -> {
             Intent tourIntent = new Intent(context, TourActivity.class);
             tourIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour", tour);
             startActivity(tourIntent);
         });
-    }
-
-    private void setPoiList(List<Poi> pois) {
-        mTourOverview.setPois(pois).draw();
-        hidePDialog();
     }
 
     @Override
@@ -74,15 +72,20 @@ public class DetailActivity extends FragmentActivity implements OnMapReadyCallba
         hidePDialog();
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mTourOverview.initMap(googleMap).draw();
+    }
+
+    private void setPoiList(List<Poi> pois) {
+        mTourOverview.setPois(pois).draw();
+        hidePDialog();
+    }
+
     private void hidePDialog() {
         if (pDialog != null) {
             pDialog.dismiss();
             pDialog = null;
         }
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mTourOverview.initMap(googleMap).draw();
     }
 }

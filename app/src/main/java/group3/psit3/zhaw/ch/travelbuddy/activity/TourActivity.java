@@ -1,6 +1,5 @@
 package group3.psit3.zhaw.ch.travelbuddy.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,8 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Button;
-
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -23,34 +22,42 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 import group3.psit3.zhaw.ch.travelbuddy.R;
 import group3.psit3.zhaw.ch.travelbuddy.model.*;
 import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.FusedLocationApi;
 
+/**
+ * The TourActivity register callbacks and reacts to certain events like
+ * location changes or new information coming from the server per HTTP.
+ * It holds the current Map, POI, Progress and Location as state.
+ */
 public class TourActivity extends FragmentActivity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
+
+    private static final String TAG = TourActivity.class.getSimpleName();
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final String TAG = TourActivity.class.getSimpleName();
+    private static final String TIME_SPENT_ON_ROUTE = "Time spent on route: ";
+    private static final String DISTANCE_TO_NEXT_POINT = "Distance to next point: ";
+    private static final int LOCATION_REQUEST_INTERVAL = 5000;
+    private static final int MAX_LOCATION_REQUEST_INTERVAL = 500;
+
     private GoogleApiClient mGoogleApiClient;
     private Map mMap;
     private Poi mPoi;
     private Progress mProgress;
     private Location mLocation;
-    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mProgress = new Progress();
-        setContentView(R.layout.route);
+        setContentView(R.layout.activity_tour);
 
 
         if (mGoogleApiClient == null) {
@@ -64,13 +71,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment);
         mapFragment.getMapAsync(this);
-
-        button = (Button) findViewById(R.id.btn_viewSummary);
-        button.setOnClickListener(arg0 -> {
-            viewSummary();
-        });
-
-
     }
 
     @Override
@@ -84,7 +84,13 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         startLocationUpdates(createLocationRequest());
 
         Tour tour = (Tour) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour");
+        mProgress.setTour(tour);
         RequestQueuer.aRequest().queueStartTour(TAG, tour, mLocation, this::onReceiveCurrentPoi);
+        RequestQueuer.aRequest().queueDistanceToNextPoi(TAG, mLocation, this::onDistanceToNextPoi);
+    }
+
+    private void onDistanceToNextPoi(Double distance) {
+        mProgress.updateDistance(distance);
     }
 
     @Override
@@ -93,8 +99,11 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mProgress.add(imageBitmap);
+            mProgress.setStartDistance(null);
+            if (mProgress.getBitmaps().size() >= 2) {
+                viewSummary();
+            }
         }
-
     }
 
     @Override
@@ -109,9 +118,12 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     @Override
     public void onLocationChanged(Location location) {
         mMap.updatePosition(location);
-        RequestQueuer.aRequest().queueCurrentRoute(TAG, location, this::onReceiveCurrentRoute, this::onTourFinished);
+        this.mLocation = location;
+        RequestQueuer.aRequest().queueCurrentRoute(TAG, location, this::onReceiveCurrentRoute);
         RequestQueuer.aRequest().queueGetNextPoi(TAG, this::onReceiveCurrentPoi);
-
+        RequestQueuer.aRequest().queueIsPoiInReach(TAG, mLocation, this::onIsPoiInReach);
+        RequestQueuer.aRequest().queueDistanceToNextPoi(TAG, mLocation, this::onDistanceToNextPoi);
+        updateProgressView(mProgress);
     }
 
     @Override
@@ -119,10 +131,19 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         this.mMap = new Map(googleMap).drawRoute(mPoi);
     }
 
-    protected void startLocationUpdates(LocationRequest locationRequest) {
-        //noinspection MissingPermission
-        FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, locationRequest, this);
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // falls through
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // falls through
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     protected void onStart() {
@@ -135,39 +156,49 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         super.onStop();
     }
 
-    protected LocationRequest createLocationRequest() {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(500);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return mLocationRequest;
-    }
-
-    private void onReceiveCurrentRoute(List<LatLng> route) {
-        mMap.drawRoute(route);
-    }
-
-    private void onTourFinished(Object o){
-        viewSummary();
-    }
-
     private void onReceiveCurrentPoi(Poi poi) {
         this.mPoi = poi;
-        mMap.drawRoute(poi.getRoute());
-        //if (mPoi.isInReach()) {
-        if(true){
-            System.out.println("YOU SHOULD TAKE A PICTURE NOW!");
-            dispatchTakePictureIntent();
-            //RequestQueuer.aRequest().queueIsPhotoValid(TAG, mLocation, this::onReceivePhotoValidation);
+        mMap.drawRoute(poi);
+    }
+
+    private void onIsPoiInReach(Boolean isInReach) {
+        if (isInReach) {
+            if (mProgress.canTakePhoto()) {
+                dispatchTakePictureIntent();
+            }
         }
     }
 
-    private void onReceivePhotoValidation(PhotoStatus status) {
-        if (status.equals(PhotoStatus.OK)) {
-            // TODO show some dialog to confirm photo
-        } else {
-            dispatchTakePictureIntent();
+    private void onReceiveCurrentRoute(RouteResponse routeResponse) {
+        if (routeResponse.isFinished()) {
+            RequestQueuer.aRequest().queueEndTour(TAG);
+            viewSummary();
         }
+        mMap.drawRoute(routeResponse.getRoute());
+    }
+
+    private void updateProgressView(Progress progress) {
+        TextView timeSpent = (TextView) findViewById(R.id.timeSpent);
+        TextView distance = (TextView) findViewById(R.id.currentDistance);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        timeSpent.setText(TIME_SPENT_ON_ROUTE + progress.getTimeSpent());
+        distance.setText(DISTANCE_TO_NEXT_POINT + progress.getCurrentDistance() + "m");
+        progressBar.setProgress(progress.getProgress(), true);
+    }
+
+    private void startLocationUpdates(LocationRequest locationRequest) {
+        //noinspection MissingPermission
+        FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, locationRequest, this);
+    }
+
+    private LocationRequest createLocationRequest() {
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(LOCATION_REQUEST_INTERVAL);
+        mLocationRequest.setFastestInterval(MAX_LOCATION_REQUEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return mLocationRequest;
     }
 
     private boolean hasLocationPermission() {
@@ -176,27 +207,19 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     }
 
     private void dispatchTakePictureIntent() {
+        RequestQueuer.aRequest().queueSetCurrentPoiVisited(TAG);
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // TODO
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        // TODO
-    }
-    public void viewSummary(){
-        SummaryActivity.gallery = mProgress.getImages();
-        Summary summary = new Summary(this.mProgress);
+    private void viewSummary() {
         Intent summaryIntent = new Intent(this, SummaryActivity.class);
-        summaryIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Summary", summary);
+        summaryIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Progress", mProgress);
         startActivity(summaryIntent);
     }
+
+
 
 }

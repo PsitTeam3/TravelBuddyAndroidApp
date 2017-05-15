@@ -1,25 +1,25 @@
 package group3.psit3.zhaw.ch.travelbuddy.util;
 
-import com.android.volley.toolbox.ImageLoader.ImageCache;
-
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
+import com.android.volley.toolbox.ImageLoader.ImageCache;
 
-public class LruBitmapCache extends LruCache<String, Bitmap> implements
-        ImageCache {
-    public static int getDefaultLruCacheSize() {
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        final int cacheSize = maxMemory / 8;
-
-        return cacheSize;
-    }
-
+/**
+ * LruBitmapCache optimizes memory by capping the total memory used.
+ * The total size is configurable, it will remove the oldest bitmaps.
+ */
+public class LruBitmapCache extends LruCache<String, Bitmap> implements ImageCache {
     public LruBitmapCache() {
         this(getDefaultLruCacheSize());
     }
 
-    public LruBitmapCache(int sizeInKiloBytes) {
+    private LruBitmapCache(int sizeInKiloBytes) {
         super(sizeInKiloBytes);
+    }
+
+    private static int getDefaultLruCacheSize() {
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        return maxMemory / 8;
     }
 
     @Override
