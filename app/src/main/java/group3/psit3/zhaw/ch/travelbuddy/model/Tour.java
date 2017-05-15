@@ -55,18 +55,13 @@ public class Tour implements Serializable {
         return this;
     }
 
-    public Tour setDescription(String description) {
+    Tour setDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public Tour setDetailDescription(String detailDescription) {
+    Tour setDetailDescription(String detailDescription) {
         this.detailDescription = detailDescription;
-        return this;
-    }
-
-    public Tour setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
         return this;
     }
 
@@ -86,14 +81,6 @@ public class Tour implements Serializable {
 
     public int getId() {
         return id;
-    }
-
-    public void setPois(List<Poi> pois) {
-        this.pois = pois;
-    }
-
-    public List<Poi> getPois() {
-        return pois;
     }
 
     public Tour setId(int id) {

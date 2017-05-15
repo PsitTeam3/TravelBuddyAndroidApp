@@ -17,6 +17,12 @@ public class TourOverview {
         this.pois = new ArrayList<>();
     }
 
+    /**
+     * This draws the preview of a tour with markers representing the POIs.
+     * Is zooms the camera so that all POIs are visible with a certain padding
+     * to the borders.
+     * @return Builder pattern
+     */
     public TourOverview draw() {
         List<MarkerOptions> markerOptions = pois.stream()
                 .map(cur -> new MarkerOptions().position(cur.getLatLng()).title(cur.getDescription()))

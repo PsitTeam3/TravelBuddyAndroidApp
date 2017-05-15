@@ -13,7 +13,13 @@ import group3.psit3.zhaw.ch.travelbuddy.R;
 import group3.psit3.zhaw.ch.travelbuddy.model.Progress;
 import group3.psit3.zhaw.ch.travelbuddy.model.Summary;
 
+/**
+ * The SummaryActivity shows the results of a finished tour.
+ */
 public class SummaryActivity extends Activity {
+
+    private static final String TOTAL_TIME_SPENT = "Total time spent: ";
+    private static final String TOUR_SUMMARY = "Tour summary - ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +29,6 @@ public class SummaryActivity extends Activity {
         Progress progress = (Progress) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Progress");
 
         drawSummary(new Summary(progress));
-
     }
 
     private void drawSummary(Summary summary) {
@@ -50,13 +55,17 @@ public class SummaryActivity extends Activity {
         });
 
         TextView totalTimeSpent = (TextView) findViewById(R.id.totalTimeSpent);
-        totalTimeSpent.setText("Total time spent: " + summary.getTotalTimeSpent());
+        totalTimeSpent.setText(TOTAL_TIME_SPENT + summary.getTotalTimeSpent());
 
         TextView tourName = (TextView) findViewById(R.id.tourName);
-        tourName.setText("Tour summary - " + summary.getTourName());
+        tourName.setText(TOUR_SUMMARY + summary.getTourName());
 
         TextView tourDescription = (TextView) findViewById(R.id.tourDescription);
         tourDescription.setText("\"" + summary.getTourDescription() + "\"");
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

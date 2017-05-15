@@ -13,10 +13,14 @@ import group3.psit3.zhaw.ch.travelbuddy.model.Tour;
 import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
 import java.util.List;
-
+/**
+ * The ListActivity fetches all available tours in the current city
+ * and presents the as list.
+ */
 public class ListActivity extends Activity {
-    // Log tag
+
     private static final String TAG = ListActivity.class.getSimpleName();
+    private static final String LOADING_TOURS = "Loading tours...";
 
     private ProgressDialog pDialog;
     private CustomListAdapter mAdapter;
@@ -33,7 +37,7 @@ public class ListActivity extends Activity {
         listView.setAdapter(mAdapter);
 
         pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Loading tours...");
+        pDialog.setMessage(LOADING_TOURS);
         pDialog.show();
 
         RequestQueuer.aRequest().queueTourList(TAG, this::setTourList);
@@ -50,11 +54,6 @@ public class ListActivity extends Activity {
         });
     }
 
-    public void setTourList(List<Tour> tourList) {
-        hidePDialog();
-        mAdapter.setTours(tourList);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -64,6 +63,11 @@ public class ListActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
+    }
+
+    private void setTourList(List<Tour> tourList) {
+        hidePDialog();
+        mAdapter.setTours(tourList);
     }
 
     private void hidePDialog() {

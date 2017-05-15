@@ -4,6 +4,10 @@ import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 import com.android.volley.toolbox.ImageLoader.ImageCache;
 
+/**
+ * LruBitmapCache optimizes memory by capping the total memory used.
+ * The total size is configurable, it will remove the oldest bitmaps.
+ */
 public class LruBitmapCache extends LruCache<String, Bitmap> implements ImageCache {
     public LruBitmapCache() {
         this(getDefaultLruCacheSize());

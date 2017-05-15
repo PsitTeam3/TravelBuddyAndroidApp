@@ -32,6 +32,11 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.FusedLocationApi;
 
+/**
+ * The TourActivity register callbacks and reacts to certain events like
+ * location changes or new information coming from the server per HTTP.
+ * It holds the current Map, POI, Progress and Location as state.
+ */
 public class TourActivity extends FragmentActivity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
 
     private static final String TAG = TourActivity.class.getSimpleName();
@@ -126,6 +131,21 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         this.mMap = new Map(googleMap).drawRoute(mPoi);
     }
 
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // falls through
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // falls through
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     protected void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
@@ -155,16 +175,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
             viewSummary();
         }
         mMap.drawRoute(routeResponse.getRoute());
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // falls through
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        // falls through
     }
 
     private void updateProgressView(Progress progress) {
@@ -209,5 +219,7 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         summaryIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Progress", mProgress);
         startActivity(summaryIntent);
     }
+
+
 
 }

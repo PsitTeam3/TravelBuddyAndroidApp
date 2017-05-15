@@ -75,7 +75,6 @@ public class CustomListAdapter extends BaseAdapter {
      * Sets tour list and triggers a re-render.
      * @param tours Tours to set.
      */
-
     public void setTours(List<Tour> tours) {
         this.tours = tours;
         notifyDataSetChanged();

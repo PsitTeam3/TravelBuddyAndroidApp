@@ -18,8 +18,12 @@ import group3.psit3.zhaw.ch.travelbuddy.util.RequestQueuer;
 
 import java.util.List;
 
+/**
+ * The DetailActivity shows a detailed preview of a tour. It shows all POIs
+ * on a map with a short description.
+ */
 public class DetailActivity extends FragmentActivity implements OnMapReadyCallback {
-    // Log tag
+
     private static final String TAG = DetailActivity.class.getSimpleName();
 
     private ProgressDialog pDialog;
@@ -62,14 +66,19 @@ public class DetailActivity extends FragmentActivity implements OnMapReadyCallba
         });
     }
 
-    private void setPoiList(List<Poi> pois) {
-        mTourOverview.setPois(pois).draw();
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         hidePDialog();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onMapReady(GoogleMap googleMap) {
+        mTourOverview.initMap(googleMap).draw();
+    }
+
+    private void setPoiList(List<Poi> pois) {
+        mTourOverview.setPois(pois).draw();
         hidePDialog();
     }
 
@@ -78,10 +87,5 @@ public class DetailActivity extends FragmentActivity implements OnMapReadyCallba
             pDialog.dismiss();
             pDialog = null;
         }
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mTourOverview.initMap(googleMap).draw();
     }
 }

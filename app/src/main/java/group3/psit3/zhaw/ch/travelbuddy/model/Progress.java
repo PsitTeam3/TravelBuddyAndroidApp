@@ -80,10 +80,6 @@ public class Progress implements Serializable {
         return currentDistance == null ? 0 : Math.toIntExact(Math.round(currentDistance));
     }
 
-    Date getStartTime() {
-        return this.startTime;
-    }
-
     public void setStartDistance(Double distance) {
         this.startDistance = distance;
     }
