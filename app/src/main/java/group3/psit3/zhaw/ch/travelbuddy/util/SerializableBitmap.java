@@ -1,4 +1,4 @@
-package group3.psit3.zhaw.ch.travelbuddy.model;
+package group3.psit3.zhaw.ch.travelbuddy.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,6 +7,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
+/**
+ * SerializableBitmap wraps Bitmap and provides methods to
+ * serialize the bitmap. This is used to transfer bitmaps
+ * between Activities through intents.
+ */
 public class SerializableBitmap implements Serializable {
 
     private Bitmap currentImage;

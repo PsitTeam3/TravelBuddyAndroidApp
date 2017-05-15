@@ -12,16 +12,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This is a model class and gets parsed from JSON.
+ */
 public class RouteResponse implements Serializable {
 
     private List<LatLng> route;
-    private boolean isTourFinnished;
+    private boolean isTourFinished;
 
-    public RouteResponse(List<LatLng> route, boolean isTourFinnished) {
+    private RouteResponse(List<LatLng> route, boolean isTourFinished) {
         this.route = route;
-        this.isTourFinnished = isTourFinnished;
+        this.isTourFinished = isTourFinished;
     }
 
+    /**
+     * Parses a RouteResponse object from a string. It
+     * @param response Response string to parse
+     * @return
+     */
     public static RouteResponse fromJson(String response) {
         if ("Tour doesn't have remaining POIs".equals(response)) {
             return new RouteResponse(new ArrayList<>(), true);
@@ -32,8 +40,8 @@ public class RouteResponse implements Serializable {
         return new RouteResponse(latLongs.stream().map(cur -> new LatLng(cur.getLat(), cur.getLong())).collect(Collectors.toList()), false);
     }
 
-    public boolean isFinnished() {
-        return isTourFinnished;
+    public boolean isFinished() {
+        return isTourFinished;
     }
 
     public List<LatLng> getRoute() {

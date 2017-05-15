@@ -21,7 +21,12 @@ public class SummaryActivity extends Activity {
         setContentView(R.layout.activity_summary);
 
         Progress progress = (Progress) getIntent().getSerializableExtra("group3.psit3.zhaw.ch.travelbuddy.model.Progress");
-        Summary summary = new Summary(progress);
+
+        drawSummary(new Summary(progress));
+
+    }
+
+    private void drawSummary(Summary summary) {
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutChild);
 
@@ -52,5 +57,6 @@ public class SummaryActivity extends Activity {
 
         TextView tourDescription = (TextView) findViewById(R.id.tourDescription);
         tourDescription.setText("\"" + summary.getTourDescription() + "\"");
+
     }
 }

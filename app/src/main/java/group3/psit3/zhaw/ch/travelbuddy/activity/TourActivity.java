@@ -33,9 +33,15 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.FusedLocationApi;
 
 public class TourActivity extends FragmentActivity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
+
+    private static final String TAG = TourActivity.class.getSimpleName();
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final String TAG = TourActivity.class.getSimpleName();
+    private static final String TIME_SPENT_ON_ROUTE = "Time spent on route: ";
+    private static final String DISTANCE_TO_NEXT_POINT = "Distance to next point: ";
+    private static final int LOCATION_REQUEST_INTERVAL = 5000;
+    private static final int MAX_LOCATION_REQUEST_INTERVAL = 500;
+
     private GoogleApiClient mGoogleApiClient;
     private Map mMap;
     private Poi mPoi;
@@ -115,25 +121,9 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         updateProgressView(mProgress);
     }
 
-    private void updateProgressView(Progress progress) {
-        TextView timeSpent = (TextView) findViewById(R.id.timeSpent);
-        TextView distance = (TextView) findViewById(R.id.currentDistance);
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-        timeSpent.setText("Time spent on route: " + progress.getTimeSpent());
-        distance.setText("Distance to next point: " + progress.getCurrentDistance() + "m");
-        progressBar.setProgress(progress.getProgress(), true);
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = new Map(googleMap).drawRoute(mPoi);
-    }
-
-    private void startLocationUpdates(LocationRequest locationRequest) {
-        //noinspection MissingPermission
-        FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, locationRequest, this);
     }
 
     protected void onStart() {
@@ -144,22 +134,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
     protected void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
-    }
-
-    private LocationRequest createLocationRequest() {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(500);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return mLocationRequest;
-    }
-
-    private void onReceiveCurrentRoute(RouteResponse routeResponse) {
-        if (routeResponse.isFinnished()) {
-            RequestQueuer.aRequest().queueEndTour(TAG);
-            viewSummary();
-        }
-        mMap.drawRoute(routeResponse.getRoute());
     }
 
     private void onReceiveCurrentPoi(Poi poi) {
@@ -175,6 +149,48 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         }
     }
 
+    private void onReceiveCurrentRoute(RouteResponse routeResponse) {
+        if (routeResponse.isFinished()) {
+            RequestQueuer.aRequest().queueEndTour(TAG);
+            viewSummary();
+        }
+        mMap.drawRoute(routeResponse.getRoute());
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // falls through
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // falls through
+    }
+
+    private void updateProgressView(Progress progress) {
+        TextView timeSpent = (TextView) findViewById(R.id.timeSpent);
+        TextView distance = (TextView) findViewById(R.id.currentDistance);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        timeSpent.setText(TIME_SPENT_ON_ROUTE + progress.getTimeSpent());
+        distance.setText(DISTANCE_TO_NEXT_POINT + progress.getCurrentDistance() + "m");
+        progressBar.setProgress(progress.getProgress(), true);
+    }
+
+    private void startLocationUpdates(LocationRequest locationRequest) {
+        //noinspection MissingPermission
+        FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, locationRequest, this);
+    }
+
+    private LocationRequest createLocationRequest() {
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(LOCATION_REQUEST_INTERVAL);
+        mLocationRequest.setFastestInterval(MAX_LOCATION_REQUEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return mLocationRequest;
+    }
+
     private boolean hasLocationPermission() {
         return (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
@@ -186,16 +202,6 @@ public class TourActivity extends FragmentActivity implements ConnectionCallback
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // TODO
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        // TODO
     }
 
     private void viewSummary() {

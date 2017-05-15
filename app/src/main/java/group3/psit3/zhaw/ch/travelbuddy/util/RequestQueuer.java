@@ -19,7 +19,11 @@ import org.json.JSONArray;
 import java.util.List;
 import java.util.function.Consumer;
 
-
+/**
+ * The RequestQueuer allows to simply create HTTP requests and to register
+ * both a success and a failure callback. By default it provides a error handler
+ * that logs errors but prevents the app from crashing.
+ */
 public class RequestQueuer {
 
     public static RequestQueuer aRequest() {
@@ -93,7 +97,6 @@ public class RequestQueuer {
                 error -> onError(TAG, error, url));
         AppController.getInstance().addToRequestQueue(req, TAG);
     }
-
 
     public void queueEndTour(String TAG) {
         String url = UrlBuilder.anUrl().endTour().build();

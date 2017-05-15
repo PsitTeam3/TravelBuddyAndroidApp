@@ -23,7 +23,6 @@ public class DetailActivity extends FragmentActivity implements OnMapReadyCallba
     private static final String TAG = DetailActivity.class.getSimpleName();
 
     private ProgressDialog pDialog;
-    private Button button;
     private TourOverview mTourOverview;
 
     @Override
@@ -55,7 +54,7 @@ public class DetailActivity extends FragmentActivity implements OnMapReadyCallba
         detailDescriptionView.setText(detailDescription);
 
         final Context context = this;
-        button = (Button) findViewById(R.id.startTourButton);
+        Button button = (Button) findViewById(R.id.startTourButton);
         button.setOnClickListener(arg0 -> {
             Intent tourIntent = new Intent(context, TourActivity.class);
             tourIntent.putExtra("group3.psit3.zhaw.ch.travelbuddy.model.Tour", tour);

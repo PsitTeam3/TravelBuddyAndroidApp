@@ -2,6 +2,9 @@ package group3.psit3.zhaw.ch.travelbuddy.model;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * This is a model class and gets parsed from JSON.
+ */
 public class LatLong {
     @SerializedName("Latitude")
     private double lat;
@@ -13,11 +16,11 @@ public class LatLong {
         this.lon = lon;
     }
 
-    public double getLong() {
+    double getLong() {
         return lon;
     }
 
-    public double getLat() {
+    double getLat() {
         return lat;
     }
 }

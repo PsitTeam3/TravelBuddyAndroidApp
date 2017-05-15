@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * This is a model class and gets parsed from JSON.
+ */
 public class Tour implements Serializable {
 
     private static final String TAG = Tour.class.getSimpleName();

@@ -20,7 +20,7 @@ public class CustomListAdapter extends BaseAdapter {
     private Activity activity;
     private List<Tour> tours;
     private LayoutInflater inflater;
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public CustomListAdapter(Activity activity) {
         this.activity = activity;
@@ -70,6 +70,11 @@ public class CustomListAdapter extends BaseAdapter {
 
         return convertView;
     }
+
+    /**
+     * Sets tour list and triggers a re-render.
+     * @param tours Tours to set.
+     */
 
     public void setTours(List<Tour> tours) {
         this.tours = tours;
