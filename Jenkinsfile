@@ -12,6 +12,7 @@ node {
         stage ('Tests') {
             parallel 'static': {
                 sh "echo 'shell scripts to run static tests...'"
+		sh ./gradlew test
             },
             'unit': {
                 sh "echo 'shell scripts to run unit tests...'"
